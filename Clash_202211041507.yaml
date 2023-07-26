@@ -2687,6 +2687,7 @@ rules:
   - DOMAIN-SUFFIX,flzbcdn.xyz,🚀 节点选择
   - DOMAIN-SUFFIX,ocnttv.com,🚀 节点选择
   - DOMAIN-SUFFIX,translate.googleapis.com,🚀 节点选择
+  - DOMAIN-SUFFIX,chat.openai.com,🚀 节点选择
   - DOMAIN-SUFFIX,13th.tech,🎯 全球直连
   - DOMAIN-SUFFIX,423down.com,🎯 全球直连
   - DOMAIN-SUFFIX,bokecc.com,🎯 全球直连
