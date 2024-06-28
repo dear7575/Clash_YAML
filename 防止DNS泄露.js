@@ -150,6 +150,18 @@ function overwriteProxyGroups(params) {
         {name: "SG-自动选择", regex: /新加坡|狮城|SG|Singapore|🇸🇬/},
         {name: "JP-自动选择", regex: /日本|JP|Japan|🇯🇵/},
         {name: "US-自动选择", regex: /美国|US|United States|America|🇺🇸/},
+        {name: "DE-自动选择", regex: /德国|DE|Germany|🇩🇪/},
+        {name: "FR-自动选择", regex: /法国|FR|France|🇫🇷/},
+        {name: "GB-自动选择", regex: /英国|GB|Britain|England|🇬🇧/},
+        {name: "CA-自动选择", regex: /加拿大|CA|Canada|🇨🇦/},
+        {name: "AU-自动选择", regex: /澳大利亚|AU|Australia|🇦🇺/},
+        {name: "IT-自动选择", regex: /意大利|IT|Italy|🇮🇹/},
+        {name: "ES-自动选择", regex: /西班牙|ES|Spain|🇪🇸/},
+        {name: "RU-自动选择", regex: /俄罗斯|RU|Russia|🇷🇺/},
+        {name: "KR-自动选择", regex: /韩国|KR|Korea|🇰🇷/},
+        {name: "IN-自动选择", regex: /印度|IN|India|🇮🇳/},
+        {name: "BR-自动选择", regex: /巴西|BR|Brazil|🇧🇷/},
+        {name: "ZA-自动选择", regex: /南非|ZA|🇿🇦/},
     ];
 
     const autoProxyGroups = autoProxyGroupRegexs
