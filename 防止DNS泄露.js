@@ -1,4 +1,3 @@
-# Clash Verge Scrpit
 // Define the `main` function
 
 const proxyName = "🛜代理模式";
@@ -145,23 +144,23 @@ function overwriteProxyGroups(params) {
     const allProxies = params["proxies"].map((e) => e.name);
     // 自动选择代理组，按地区分组选延迟最低
     const autoProxyGroupRegexs = [
-        {name: "HK-自动选择", regex: /香港|HK|Hong|🇭🇰/},
-        {name: "TW-自动选择", regex: /台湾|TW|Taiwan|Wan|🇨🇳|🇹🇼/},
-        {name: "SG-自动选择", regex: /新加坡|狮城|SG|Singapore|🇸🇬/},
-        {name: "JP-自动选择", regex: /日本|JP|Japan|🇯🇵/},
-        {name: "US-自动选择", regex: /美国|US|United States|America|🇺🇸/},
-        {name: "DE-自动选择", regex: /德国|DE|Germany|🇩🇪/},
-        {name: "FR-自动选择", regex: /法国|FR|France|🇫🇷/},
-        {name: "GB-自动选择", regex: /英国|GB|Britain|England|🇬🇧/},
-        {name: "CA-自动选择", regex: /加拿大|CA|Canada|🇨🇦/},
-        {name: "AU-自动选择", regex: /澳大利亚|AU|Australia|🇦🇺/},
-        {name: "IT-自动选择", regex: /意大利|IT|Italy|🇮🇹/},
-        {name: "ES-自动选择", regex: /西班牙|ES|Spain|🇪🇸/},
-        {name: "RU-自动选择", regex: /俄罗斯|RU|Russia|🇷🇺/},
-        {name: "KR-自动选择", regex: /韩国|KR|Korea|🇰🇷/},
-        {name: "IN-自动选择", regex: /印度|IN|India|🇮🇳/},
-        {name: "BR-自动选择", regex: /巴西|BR|Brazil|🇧🇷/},
-        {name: "ZA-自动选择", regex: /南非|ZA|🇿🇦/},
+        { name: "HK-自动选择", regex: /香港|HK|Hong|🇭🇰/ },
+        { name: "TW-自动选择", regex: /台湾|TW|Taiwan|Wan|🇨🇳|🇹🇼/ },
+        { name: "SG-自动选择", regex: /新加坡|狮城|SG|Singapore|🇸🇬/ },
+        { name: "JP-自动选择", regex: /日本|JP|Japan|🇯🇵/ },
+        { name: "US-自动选择", regex: /美国|US|United States|America|🇺🇸/ },
+        { name: "DE-自动选择", regex: /德国|DE|Germany|🇩🇪/ },
+        { name: "FR-自动选择", regex: /法国|FR|France|🇫🇷/ },
+        { name: "GB-自动选择", regex: /英国|GB|Britain|England|🇬🇧/ },
+        { name: "CA-自动选择", regex: /加拿大|CA|Canada|🇨🇦/ },
+        { name: "AU-自动选择", regex: /澳大利亚|AU|Australia|🇦🇺/ },
+        { name: "IT-自动选择", regex: /意大利|IT|Italy|🇮🇹/ },
+        { name: "ES-自动选择", regex: /西班牙|ES|Spain|🇪🇸/ },
+        { name: "RU-自动选择", regex: /俄罗斯|RU|Russia|🇷🇺/ },
+        { name: "KR-自动选择", regex: /韩国|KR|Korea|🇰🇷/ },
+        { name: "IN-自动选择", regex: /印度|IN|India|🇮🇳/ },
+        { name: "BR-自动选择", regex: /巴西|BR|Brazil|🇧🇷/ },
+        { name: "ZA-自动选择", regex: /南非|ZA|🇿🇦/ },
     ];
 
     const autoProxyGroups = autoProxyGroupRegexs
@@ -197,7 +196,11 @@ function overwriteProxyGroups(params) {
         },
         {
             name: "🤖自动选择",
-            type: "select",
+            // type: "select",
+            type: "url-test",
+            url: "http://www.gstatic.com/generate_204",
+            interval: 300,
+            tolerance: 50,
             //icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/speed.svg",
             proxies: ["ALL-自动选择"],
         },
@@ -245,7 +248,7 @@ function overwriteProxyGroups(params) {
     ];
 
     autoProxyGroups.length &&
-    groups[2].proxies.unshift(...autoProxyGroups.map((item) => item.name));
+        groups[2].proxies.unshift(...autoProxyGroups.map((item) => item.name));
     groups.push(...autoProxyGroups);
     params["proxy-groups"] = groups;
 }
@@ -341,7 +344,7 @@ function overwriteDns(params) {
         "geox-url": accelURLs,
     };
 
-    params.dns = {...params.dns, ...dnsOptions};
+    params.dns = { ...params.dns, ...dnsOptions };
     Object.keys(otherOptions).forEach((key) => {
         params[key] = otherOptions[key];
     });
