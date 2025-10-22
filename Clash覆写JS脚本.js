@@ -136,7 +136,7 @@ function buildBaseLists({ landing, lowCost, countryInfo }) {
         .map(item => item.country + "节点");
 
     // defaultSelector (选择节点 组里展示的候选)
-    const selector = ["故障转移"]; // 把 fallback 放在最前
+    const selector = ["自动优选", "故障转移"]; // 自动优选和fallback放在最前
     if (landing) selector.push("落地节点");
     selector.push(...countryGroupNames);
     if (lowCost) selector.push("低倍率节点");
@@ -716,11 +716,22 @@ function buildProxyGroups({
 
     const baseGroups = [
         {
+            "name": "自动优选",
+            "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Auto.png",
+            "type": "url-test",
+            "include-all": true,
+            "url": "https://cp.cloudflare.com/generate_204",
+            "interval": 300,
+            "tolerance": 50,
+            "lazy": false,
+            "health-check": healthCheckTemplates.fast
+        },
+        {
             "name": "选择节点",
             "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Proxy.png",
             "type": "select",
             "proxies": defaultSelector,
-            "health-check": healthCheckTemplates.fast
+            "health-check": healthCheckTemplates.standard
         },
         {
             "name": "手动选择",
