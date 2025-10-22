@@ -720,6 +720,7 @@ function buildProxyGroups({
             "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Auto.png",
             "type": "url-test",
             "include-all": true,
+            "filter": "^((?!(DIRECTLY|DIRECT|Proxy|Traffic|Expire|Expired|过期|到期|套餐|剩余|流量|官网|超时|失效|Invalid|Test|测速|本地|Local)).)*$",
             "url": "https://cp.cloudflare.com/generate_204",
             "interval": 300,
             "tolerance": 50,
