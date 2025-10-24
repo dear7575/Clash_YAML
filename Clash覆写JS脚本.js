@@ -44,36 +44,86 @@ const enhancedDnsConfig = {
     "fake-ip-range": "198.18.0.1/16",
     "fake-ip-filter": [
         // 本地主机/设备
-        "+.lan", "+.local", "*.localhost", "*.local", "*.lan",
-        "localhost", "ip6-localhost", "ip6-loopback",
+        "+.lan", 
+        "+.local", 
+        "*.localhost", 
+        "*.local", 
+        "*.lan",
+        "localhost", 
+        "ip6-localhost", 
+        "ip6-loopback",
         // 局域网IP段
-        "127.*", "10.*", "172.*.*", "192.168.*", "169.254.*",
+        "127.*", 
+        "10.*", 
+        "172.*.*", 
+        "192.168.*", 
+        "169.254.*",
         // 路由器管理界面
-        "router.asus.com", "routerlogin.net", "orbilogin.com",
-        "amplifi.lan", "router.synology.com", "myrouter.local",
+        "router.asus.com", 
+        "routerlogin.net", 
+        "orbilogin.com",
+        "amplifi.lan", 
+        "router.synology.com", 
+        "myrouter.local",
         "www.routerlogin.net",
         // 打印机等设备
-        "*.printer", "*.router", "*.nas",
+        "*.printer", 
+        "*.router", 
+        "*.nas",
         // NTP时间服务器
-        "time.*.com", "ntp.*.com", "*.time.edu.cn", "*.ntp.org.cn",
+        "time.*.com", 
+        "ntp.*.com", 
+        "*.time.edu.cn", 
+        "*.ntp.org.cn",
         // Windows连接检测
-        "+.msftconnecttest.com", "+.msftncsi.com",
-        "www.msftconnecttest.com", "ipv6.msftconnecttest.com",
+        "+.msftconnecttest.com", 
+        "+.msftncsi.com",
+        "www.msftconnecttest.com", 
+        "ipv6.msftconnecttest.com",
         // Apple连接检测
-        "captive.apple.com", "*.apple.com.edgekey.net", "*.icloud.com.edgekey.net",
+        "captive.apple.com", 
+        "*.apple.com.edgekey.net", 
+        "*.icloud.com.edgekey.net",
         // QQ快速登录检测失败
-        "localhost.ptlogin2.qq.com", "localhost.sec.qq.com",
+        "localhost.ptlogin2.qq.com", 
+        "localhost.sec.qq.com",
         // 微信快速登录检测失败
         "localhost.work.weixin.qq.com",
+        "*.weixin.qq.com",
+        "*.wechat.com",
+        "*.servicewechat.com",
+        "*.qq.com",
+        "*.qpic.cn",
+        // 微信图片CDN
+        "*.gtimg.cn",
+        // 腾讯图片CDN
+        "*.myqcloud.com",
+        // 腾讯云
+        "*.tencent-cloud.com",
+        "*.tencent-cloud.net",
         // 游戏平台本地服务
-        "*.battle.net", "*.blizzard.com", "*.steam-chat.com", "*.epicgames.dev",
+        "*.battle.net", 
+        "*.blizzard.com", 
+        "*.steam-chat.com", 
+        "*.epicgames.dev",
         // 开发环境
-        "*.test", "*.localhost", "*.dev", "*.example",
+        "*.test", 
+        "*.localhost", 
+        "*.dev", 
+        "*.example",
         // DNS根服务器
-        "a.root-servers.net", "b.root-servers.net", "c.root-servers.net",
-        "d.root-servers.net", "e.root-servers.net", "f.root-servers.net",
-        "g.root-servers.net", "h.root-servers.net", "i.root-servers.net",
-        "j.root-servers.net", "k.root-servers.net", "l.root-servers.net",
+        "a.root-servers.net", 
+        "b.root-servers.net", 
+        "c.root-servers.net",
+        "d.root-servers.net", 
+        "e.root-servers.net", 
+        "f.root-servers.net",
+        "g.root-servers.net", 
+        "h.root-servers.net", 
+        "i.root-servers.net",
+        "j.root-servers.net", 
+        "k.root-servers.net", 
+        "l.root-servers.net",
         "m.root-servers.net"
     ],
     "default-nameserver": [
@@ -122,6 +172,12 @@ const foreignNameservers = [
 // 如果启用FakeIP，使用增强的DNS配置
 if (fakeIPEnabled) {
     enhancedDnsConfig["nameserver-policy"] = {
+        // 微信/QQ相关强制使用国内DNS
+        "*.weixin.qq.com": domesticNameservers,
+        "*.wechat.com": domesticNameservers,
+        "*.qq.com": domesticNameservers,
+        "*.qpic.cn": domesticNameservers,
+        "*.gtimg.cn": domesticNameservers,
         "geosite:cn,private": domesticNameservers, // 国内域名用国内DNS
         "geo:cn": domesticNameservers, // IP地址也分流
         "geosite:gfw": foreignNameservers, // GFW列表用国外DNS
@@ -337,6 +393,21 @@ const enhancedRules = [
     "DOMAIN-SUFFIX,gemini.google.com,AI",
     "DOMAIN-SUFFIX,augmentcode.com,AI",
 
+    // 微信直连规则
+    "DOMAIN-SUFFIX,weixin.qq.com,直连",
+    "DOMAIN-SUFFIX,wechat.com,直连",
+    "DOMAIN-SUFFIX,servicewechat.com,直连",
+    "DOMAIN-SUFFIX,qpic.cn,直连",
+    "DOMAIN-SUFFIX,gtimg.cn,直连",
+    "DOMAIN-SUFFIX,myqcloud.com,直连",
+    "DOMAIN-SUFFIX,tencent-cloud.com,直连",
+    "DOMAIN-SUFFIX,tencent-cloud.net,直连",
+    "IP-CIDR,43.128.0.0/11,直连,no-resolve",
+    // 腾讯云IP段
+    "IP-CIDR,101.32.0.0/16,直连,no-resolve",
+    "IP-CIDR,101.33.0.0/16,直连,no-resolve",
+    "IP-CIDR,150.109.0.0/16,直连,no-resolve",
+    
     // 原有规则集
     "RULE-SET,ADBlock,广告拦截",
     "RULE-SET,AdditionalFilter,广告拦截",
