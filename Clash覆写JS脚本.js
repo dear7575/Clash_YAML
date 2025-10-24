@@ -1,5 +1,5 @@
 /*
-powerfullz 的 Substore 订阅转换脚本 - 增强版
+powerfullz 的 Substore 订阅转换脚本 - 自用版
 https://github.com/powerfullz/override-rules
 传入参数：
 - loadbalance: 启用负载均衡 (默认false)
@@ -8,8 +8,6 @@ https://github.com/powerfullz/override-rules
 - full: 启用完整配置，用于纯内核启动 (默认false)
 - keepalive: 启用 tcp-keep-alive (默认false)
 - fakeip: DNS 使用 FakeIP 而不是 RedirHost (默认false)
-- tunmode: 启用TUN模式防DNS泄漏 (默认false)
-- providers: 自定义代理提供者配置 (默认false)
 */
 
 const inArg = typeof $arguments !== 'undefined' ? $arguments : {};
@@ -18,9 +16,7 @@ const loadBalance = parseBool(inArg.loadbalance) || false,
     ipv6Enabled = parseBool(inArg.ipv6) || false,
     fullConfig = parseBool(inArg.full) || false,
     keepAliveEnabled = parseBool(inArg.keepalive) || false,
-    fakeIPEnabled = parseBool(inArg.fakeip) || false,
-    tunModeEnabled = parseBool(inArg.tunmode) || false,
-    customProviders = parseBool(inArg.providers) || false;
+    fakeIPEnabled = parseBool(inArg.fakeip) || false;
 
 function parseBool(value) {
     if (typeof value === "boolean") return value;
@@ -44,48 +40,48 @@ const enhancedDnsConfig = {
     "fake-ip-range": "198.18.0.1/16",
     "fake-ip-filter": [
         // 本地主机/设备
-        "+.lan", 
-        "+.local", 
-        "*.localhost", 
-        "*.local", 
+        "+.lan",
+        "+.local",
+        "*.localhost",
+        "*.local",
         "*.lan",
-        "localhost", 
-        "ip6-localhost", 
+        "localhost",
+        "ip6-localhost",
         "ip6-loopback",
         // 局域网IP段
-        "127.*", 
-        "10.*", 
-        "172.*.*", 
-        "192.168.*", 
+        "127.*",
+        "10.*",
+        "172.*.*",
+        "192.168.*",
         "169.254.*",
         // 路由器管理界面
-        "router.asus.com", 
-        "routerlogin.net", 
+        "router.asus.com",
+        "routerlogin.net",
         "orbilogin.com",
-        "amplifi.lan", 
-        "router.synology.com", 
+        "amplifi.lan",
+        "router.synology.com",
         "myrouter.local",
         "www.routerlogin.net",
         // 打印机等设备
-        "*.printer", 
-        "*.router", 
+        "*.printer",
+        "*.router",
         "*.nas",
         // NTP时间服务器
-        "time.*.com", 
-        "ntp.*.com", 
-        "*.time.edu.cn", 
+        "time.*.com",
+        "ntp.*.com",
+        "*.time.edu.cn",
         "*.ntp.org.cn",
         // Windows连接检测
-        "+.msftconnecttest.com", 
+        "+.msftconnecttest.com",
         "+.msftncsi.com",
-        "www.msftconnecttest.com", 
+        "www.msftconnecttest.com",
         "ipv6.msftconnecttest.com",
         // Apple连接检测
-        "captive.apple.com", 
-        "*.apple.com.edgekey.net", 
+        "captive.apple.com",
+        "*.apple.com.edgekey.net",
         "*.icloud.com.edgekey.net",
         // QQ快速登录检测失败
-        "localhost.ptlogin2.qq.com", 
+        "localhost.ptlogin2.qq.com",
         "localhost.sec.qq.com",
         // 微信快速登录检测失败
         "localhost.work.weixin.qq.com",
@@ -102,27 +98,27 @@ const enhancedDnsConfig = {
         "*.tencent-cloud.com",
         "*.tencent-cloud.net",
         // 游戏平台本地服务
-        "*.battle.net", 
-        "*.blizzard.com", 
-        "*.steam-chat.com", 
+        "*.battle.net",
+        "*.blizzard.com",
+        "*.steam-chat.com",
         "*.epicgames.dev",
         // 开发环境
-        "*.test", 
-        "*.localhost", 
-        "*.dev", 
+        "*.test",
+        "*.localhost",
+        "*.dev",
         "*.example",
         // DNS根服务器
-        "a.root-servers.net", 
-        "b.root-servers.net", 
+        "a.root-servers.net",
+        "b.root-servers.net",
         "c.root-servers.net",
-        "d.root-servers.net", 
-        "e.root-servers.net", 
+        "d.root-servers.net",
+        "e.root-servers.net",
         "f.root-servers.net",
-        "g.root-servers.net", 
-        "h.root-servers.net", 
+        "g.root-servers.net",
+        "h.root-servers.net",
         "i.root-servers.net",
-        "j.root-servers.net", 
-        "k.root-servers.net", 
+        "j.root-servers.net",
+        "k.root-servers.net",
         "l.root-servers.net",
         "m.root-servers.net"
     ],
@@ -186,7 +182,7 @@ if (fakeIPEnabled) {
     };
 }
 
-function buildBaseLists({ landing, lowCost, countryInfo }) {
+function buildBaseLists({landing, lowCost, countryInfo}) {
     const countryGroupNames = countryInfo
         .filter(item => item.count > 2)
         .map(item => item.country + "节点");
@@ -215,7 +211,7 @@ function buildBaseLists({ landing, lowCost, countryInfo }) {
     if (lowCost) defaultFallback.push("低倍率节点");
     defaultFallback.push("手动选择", "DIRECT");
 
-    return { defaultProxies, defaultProxiesDirect, defaultSelector: selector, defaultFallback, countryGroupNames };
+    return {defaultProxies, defaultProxiesDirect, defaultSelector: selector, defaultFallback, countryGroupNames};
 }
 
 // 增强的规则提供者配置 - 结合两个脚本的规则集
@@ -407,7 +403,7 @@ const enhancedRules = [
     "IP-CIDR,101.32.0.0/16,直连,no-resolve",
     "IP-CIDR,101.33.0.0/16,直连,no-resolve",
     "IP-CIDR,150.109.0.0/16,直连,no-resolve",
-    
+
     // 原有规则集
     "RULE-SET,ADBlock,广告拦截",
     "RULE-SET,AdditionalFilter,广告拦截",
@@ -724,7 +720,7 @@ function parseCountries(config) {
     // 将结果对象转成数组形式
     const result = [];
     for (const [country, count] of Object.entries(countryCounts)) {
-        result.push({ country, count });
+        result.push({country, count});
     }
 
     return result;   // [{ country: 'Japan', count: 12 }, ...]
@@ -1004,39 +1000,8 @@ function buildProxyGroups({
     return baseGroups;
 }
 
-// 代理提供者配置模板 - 来自test2的优秀特性
-function buildProxyProviders() {
-    if (!customProviders) return {};
-
-    return {
-        // 示例配置，用户可以根据需要修改
-        "provider1": {
-            "type": "http",
-            "url": "", // 用户需要填入实际订阅地址
-            "path": "./proxy_provider/provider1.yaml",
-            "interval": 3600,
-            "health-check": {
-                "enable": true,
-                "interval": 600,
-                "url": "https://cp.cloudflare.com/generate_204"
-            }
-        },
-        "provider2": {
-            "type": "http",
-            "url": "", // 用户需要填入实际订阅地址
-            "path": "./proxy_provider/provider2.yaml",
-            "interval": 3600,
-            "health-check": {
-                "enable": true,
-                "interval": 600,
-                "url": "https://cp.cloudflare.com/generate_204"
-            }
-        }
-    };
-}
-
 function main(config) {
-    config = { proxies: config.proxies };
+    config = {proxies: config.proxies};
     // 解析地区与低倍率信息
     const countryInfo = parseCountries(config); // [{ country, count }]
     const lowCost = hasLowCost(config);
@@ -1048,7 +1013,7 @@ function main(config) {
         defaultSelector,
         defaultFallback,
         countryGroupNames: targetCountryList
-    } = buildBaseLists({ landing, lowCost, countryInfo });
+    } = buildBaseLists({landing, lowCost, countryInfo});
 
     // 为地区构建对应的 url-test / load-balance 组
     const countryProxyGroups = buildCountryProxyGroups(targetCountryList.map(n => n.replace(/节点$/, '')));
@@ -1086,29 +1051,6 @@ function main(config) {
         }
     });
 
-    // 如果启用TUN模式 - 来自test2的防DNS泄漏特性
-    if (tunModeEnabled) {
-        config["tun"] = {
-            "enable": true,
-            "stack": "mixed", // system/gvisor/mixed
-            "auto-route": true,
-            "auto-redirect": true,
-            "auto-detect-interface": true,
-            "strict-route": true, // 避免路由污染，防止DNS泄漏
-            "dns-hijack": ["any:53", "tcp://any:53"], // 强制劫持所有DNS
-            "mtu": 1500,
-            "gso": true,
-            "gso-max-size": 65536
-        };
-    }
-
-    // 实验性功能 - 来自test2
-    config["experimental"] = {
-        "ignore-resolve-fail": true, // 忽略DNS解析失败
-        "sniff-tls-sni": true,      // 嗅探TLS SNI
-        "sniff-http-host": true     // 嗅探HTTP Host
-    };
-
     // 全局客户端配置
     config["global-client-fingerprint"] = "chrome"; // 使用Chrome指纹
 
@@ -1121,11 +1063,6 @@ function main(config) {
         "geodata-mode": true,
         "geox-url": geoxURL,
     });
-
-    // 如果启用自定义代理提供者
-    if (customProviders) {
-        config["proxy-providers"] = buildProxyProviders();
-    }
 
     return config;
 }
