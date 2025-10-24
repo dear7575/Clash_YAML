@@ -411,6 +411,66 @@ const countriesMeta = {
         pattern: "(?i)马来西亚|马来|MY|Malaysia|🇲🇾",
         icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Malaysia.png"
     },
+    "荷兰": {
+        pattern: "(?i)荷兰|NL|Netherlands|🇳🇱",
+        icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/flags/nl.svg"
+    },
+    "瑞士": {
+        pattern: "(?i)瑞士|CH|Switzerland|🇨🇭",
+        icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/flags/ch.svg"
+    },
+    "瑞典": {
+        pattern: "(?i)瑞典|SE|Sweden|🇸🇪",
+        icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/flags/se.svg"
+    },
+    "挪威": {
+        pattern: "(?i)挪威|NO|Norway|🇳🇴",
+        icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/flags/no.svg"
+    },
+    "芬兰": {
+        pattern: "(?i)芬兰|FI|Finland|🇫🇮",
+        icon: "https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Finland.png"
+    },
+    "丹麦": {
+        pattern: "(?i)丹麦|DK|Denmark|🇩🇰",
+        icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev.github.io@main/docs/assets/icons/flags/dk.svg"
+    },
+    "意大利": {
+        pattern: "(?i)意大利|IT|Italy|🇮🇹",
+        icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/flags/it.svg"
+    },
+    "西班牙": {
+        pattern: "(?i)西班牙|ES|Spain|🇪🇸",
+        icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/flags/es.svg"
+    },
+    "奥地利": {
+        pattern: "(?i)奥地利|AT|Austria|🇦🇹",
+        icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/flags/at.svg"
+    },
+    "比利时": {
+        pattern: "(?i)比利时|BE|Belgium|🇧🇪",
+        icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/flags/be.svg"
+    },
+    "菲律宾": {
+        pattern: "(?i)菲律宾|PH|Philippines|🇵🇭",
+        icon: "https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Philippines.png"
+    },
+    "阿根廷": {
+        pattern: "(?i)阿根廷|AR|Argentina|🇦🇷",
+        icon: "https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Argentina.png"
+    },
+    "印度尼西亚": {
+        pattern: "(?i)印尼|印度尼西亚|ID|Indonesia|🇮🇩",
+        icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/flags/id.svg"
+    },
+    "越南": {
+        pattern: "(?i)越南|VN|Vietnam|🇻🇳",
+        icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/flags/vn.svg"
+    },
+    "巴西": {
+        pattern: "(?i)巴西|BR|Brazil|🇧🇷",
+        icon: "https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Brazil.png"
+    }
 };
 
 // 健康检查配置模板 - 来自test2的优秀特性
