@@ -64,9 +64,9 @@ function buildBaseLists({landing, lowCost, countryInfo}) {
 
 const ruleProviders = {
     "ADBlock": {
-        "type": "http", "behavior": "domain", "format": "text", "interval": 86400,
-        "url": "https://adrules.top/adrules_domainset.txt",
-        "path": "./ruleset/ADBlock.txt"
+        "type": "http", "behavior": "domain", "format": "mrs", "interval": 86400,
+        "url": "https://adrules.top/adrules-mihomo.mrs",
+        "path": "./ruleset/ADBlock.mrs"
     },
     "TruthSocial": {
         "url": "https://cdn.jsdelivr.net/gh/powerfullz/override-rules@master/ruleset/TruthSocial.list",
@@ -887,6 +887,17 @@ function main(config) {
         defaultSelector,
         defaultFallback
     });
+    const globalProxies = proxyGroups.map(item => item.name);
+
+    proxyGroups.push(
+        {
+            "name": "GLOBAL",
+            "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Global.png",
+            "include-all": true,
+            "type": "select",
+            "proxies": globalProxies
+        }
+    );
 
     if (fullConfig) Object.assign(config, {
         "mixed-port": 7890,
