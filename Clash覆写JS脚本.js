@@ -26,182 +26,29 @@ function parseBool(value) {
     return false;
 }
 
-// 增强的DNS配置 - 结合test2的防泄漏特性
-const enhancedDnsConfig = {
-    "enable": true,
-    "listen": "0.0.0.0:1053",
-    "ipv6": ipv6Enabled,
-    "use-system-hosts": false,
-    "cache-algorithm": "arc",
-    "prefer-h3": true,
-    "use-hosts": false, // 禁用hosts文件防止DNS泄漏
-    "respect-rules": true,
-    "enhanced-mode": fakeIPEnabled ? "fake-ip" : "redir-host",
-    "fake-ip-range": "198.18.0.1/16",
-    "fake-ip-filter": [
-        // 本地主机/设备
-        "+.lan",
-        "+.local",
-        "*.localhost",
-        "*.local",
-        "*.lan",
-        "localhost",
-        "ip6-localhost",
-        "ip6-loopback",
-        // 局域网IP段
-        "127.*",
-        "10.*",
-        "172.*.*",
-        "192.168.*",
-        "169.254.*",
-        // 路由器管理界面
-        "router.asus.com",
-        "routerlogin.net",
-        "orbilogin.com",
-        "amplifi.lan",
-        "router.synology.com",
-        "myrouter.local",
-        "www.routerlogin.net",
-        // 打印机等设备
-        "*.printer",
-        "*.router",
-        "*.nas",
-        // NTP时间服务器
-        "time.*.com",
-        "ntp.*.com",
-        "*.time.edu.cn",
-        "*.ntp.org.cn",
-        // Windows连接检测
-        "+.msftconnecttest.com",
-        "+.msftncsi.com",
-        "www.msftconnecttest.com",
-        "ipv6.msftconnecttest.com",
-        // Apple连接检测
-        "captive.apple.com",
-        "*.apple.com.edgekey.net",
-        "*.icloud.com.edgekey.net",
-        // QQ快速登录检测失败
-        "localhost.ptlogin2.qq.com",
-        "localhost.sec.qq.com",
-        // 微信快速登录检测失败
-        "localhost.work.weixin.qq.com",
-        "*.weixin.qq.com",
-        "*.wechat.com",
-        "*.servicewechat.com",
-        "*.qq.com",
-        "*.qpic.cn",
-        // 微信图片CDN
-        "*.gtimg.cn",
-        // 腾讯图片CDN
-        "*.myqcloud.com",
-        // 腾讯云
-        "*.tencent-cloud.com",
-        "*.tencent-cloud.net",
-        // 游戏平台本地服务
-        "*.battle.net",
-        "*.blizzard.com",
-        "*.steam-chat.com",
-        "*.epicgames.dev",
-        // 开发环境
-        "*.test",
-        "*.localhost",
-        "*.dev",
-        "*.example",
-        // DNS根服务器
-        "a.root-servers.net",
-        "b.root-servers.net",
-        "c.root-servers.net",
-        "d.root-servers.net",
-        "e.root-servers.net",
-        "f.root-servers.net",
-        "g.root-servers.net",
-        "h.root-servers.net",
-        "i.root-servers.net",
-        "j.root-servers.net",
-        "k.root-servers.net",
-        "l.root-servers.net",
-        "m.root-servers.net"
-    ],
-    "default-nameserver": [
-        "119.29.29.29",
-        "223.5.5.5",
-    ],
-    "nameserver": [
-        "system",
-        "223.5.5.5",
-        "119.29.29.29",
-        "180.184.1.1",
-    ],
-    "fallback": [
-        "quic://dns0.eu",
-        "https://dns.cloudflare.com/dns-query",
-        "https://dns.sb/dns-query",
-        "tcp://208.67.222.222",
-        "tcp://8.26.56.2"
-    ],
-    "proxy-server-nameserver": [
-        "quic://223.5.5.5",
-        "tls://dot.pub",
-    ],
-    // DNS配置优化
-    "force-dns-mapping": true,
-    "disable-cache": false
-};
-
-// 国内DNS服务器
-const domesticNameservers = [
-    "https://dns.alidns.com/dns-query", // 阿里云公共DNS
-    "https://doh.pub/dns-query", // 腾讯DNSPod
-    "https://doh.360.cn/dns-query" // 360安全DNS
-];
-
-// 国外DNS服务器
-const foreignNameservers = [
-    "https://1.1.1.1/dns-query", // Cloudflare(主)
-    "https://1.0.0.1/dns-query", // Cloudflare(备)
-    "https://208.67.222.222/dns-query", // OpenDNS(主)
-    "https://208.67.220.220/dns-query", // OpenDNS(备)
-    "https://194.242.2.2/dns-query", // Mullvad(主)
-    "https://194.242.2.3/dns-query" // Mullvad(备)
-];
-
-// 如果启用FakeIP，使用增强的DNS配置
-if (fakeIPEnabled) {
-    enhancedDnsConfig["nameserver-policy"] = {
-        // 微信/QQ相关强制使用国内DNS
-        "*.weixin.qq.com": domesticNameservers,
-        "*.wechat.com": domesticNameservers,
-        "*.qq.com": domesticNameservers,
-        "*.qpic.cn": domesticNameservers,
-        "*.gtimg.cn": domesticNameservers,
-        "geosite:cn,private": domesticNameservers, // 国内域名用国内DNS
-        "geo:cn": domesticNameservers, // IP地址也分流
-        "geosite:gfw": foreignNameservers, // GFW列表用国外DNS
-        "geosite:geolocation-!cn": foreignNameservers, // 国外域名用国外DNS
-        "full-nameserver": foreignNameservers // 兜底用国外DNS
-    };
-}
-
 function buildBaseLists({landing, lowCost, countryInfo}) {
     const countryGroupNames = countryInfo
         .filter(item => item.count > 2)
         .map(item => item.country + "节点");
 
     // defaultSelector (选择节点 组里展示的候选)
-    const selector = ["自动优选", "故障转移"]; // 自动优选和fallback放在最前
+    // 故障转移, 落地节点(可选), 各地区节点, 低倍率节点(可选), 手动选择, DIRECT
+    const selector = ["自动优选", "故障转移"]; // 把 fallback 放在最前
     if (landing) selector.push("落地节点");
     selector.push(...countryGroupNames);
     if (lowCost) selector.push("低倍率节点");
     selector.push("手动选择", "DIRECT");
 
     // defaultProxies (各分类策略引用)
+    // 选择节点, 各地区节点, 低倍率节点(可选), 手动选择, 直连
     const defaultProxies = ["选择节点", ...countryGroupNames];
     if (lowCost) defaultProxies.push("低倍率节点");
     defaultProxies.push("手动选择", "直连");
 
     // direct 优先的列表
-    const defaultProxiesDirect = ["直连", ...countryGroupNames, "选择节点", "手动选择"];
+    const defaultProxiesDirect = ["直连", ...countryGroupNames, "选择节点", "手动选择"]; // 直连优先
     if (lowCost) {
+        // 在直连策略里低倍率次于地区、早于选择节点
         defaultProxiesDirect.splice(1 + countryGroupNames.length, 0, "低倍率节点");
     }
 
@@ -209,14 +56,13 @@ function buildBaseLists({landing, lowCost, countryInfo}) {
     if (landing) defaultFallback.push("落地节点");
     defaultFallback.push(...countryGroupNames);
     if (lowCost) defaultFallback.push("低倍率节点");
+    // 可选是否加入 手动选择 / DIRECT；按容灾语义加入。
     defaultFallback.push("手动选择", "DIRECT");
 
     return {defaultProxies, defaultProxiesDirect, defaultSelector: selector, defaultFallback, countryGroupNames};
 }
 
-// 增强的规则提供者配置 - 结合两个脚本的规则集
-const enhancedRuleProviders = {
-    // 原有的powerfullz规则集
+const ruleProviders = {
     "ADBlock": {
         "type": "http", "behavior": "domain", "format": "text", "interval": 86400,
         "url": "https://adrules.top/adrules_domainset.txt",
@@ -282,7 +128,6 @@ const enhancedRuleProviders = {
         "url": "https://cdn.jsdelivr.net/gh/powerfullz/override-rules@master/ruleset/Crypto.list",
         "path": "./ruleset/Crypto.list"
     },
-    // 新增Loyalsoldier规则集 - 来自test2
     "reject": {
         "type": "http", "format": "yaml", "interval": 86400,
         "behavior": "domain",
@@ -367,44 +212,9 @@ const enhancedRuleProviders = {
         "url": "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/OpenAI/OpenAI.yaml",
         "path": "./ruleset/blackmatrix7/openai.yaml"
     }
-};
+}
 
-// 增强的规则配置 - 结合两个脚本的规则
-const enhancedRules = [
-    // 局域网和本地服务 - 最高优先级
-    "DOMAIN-SUFFIX,local,直连",
-    "DOMAIN-SUFFIX,lan,直连",
-    "DOMAIN-SUFFIX,localhost,直连",
-    "IP-CIDR,127.0.0.0/8,直连,no-resolve",
-    "IP-CIDR,10.0.0.0/8,直连,no-resolve",
-    "IP-CIDR,172.16.0.0/12,直连,no-resolve",
-    "IP-CIDR,192.168.0.0/16,直连,no-resolve",
-    "IP-CIDR,169.254.0.0/16,直连,no-resolve",
-
-    // AI服务相关 - 高优先级
-    "DOMAIN-SUFFIX,chatgpt.com,AI",
-    "DOMAIN-SUFFIX,claude.ai,AI",
-    "DOMAIN-SUFFIX,anthropic.com,AI",
-    "DOMAIN-SUFFIX,perplexity.ai,AI",
-    "DOMAIN-SUFFIX,gemini.google.com,AI",
-    "DOMAIN-SUFFIX,augmentcode.com,AI",
-
-    // 微信直连规则
-    "DOMAIN-SUFFIX,weixin.qq.com,直连",
-    "DOMAIN-SUFFIX,wechat.com,直连",
-    "DOMAIN-SUFFIX,servicewechat.com,直连",
-    "DOMAIN-SUFFIX,qpic.cn,直连",
-    "DOMAIN-SUFFIX,gtimg.cn,直连",
-    "DOMAIN-SUFFIX,myqcloud.com,直连",
-    "DOMAIN-SUFFIX,tencent-cloud.com,直连",
-    "DOMAIN-SUFFIX,tencent-cloud.net,直连",
-    "IP-CIDR,43.128.0.0/11,直连,no-resolve",
-    // 腾讯云IP段
-    "IP-CIDR,101.32.0.0/16,直连,no-resolve",
-    "IP-CIDR,101.33.0.0/16,直连,no-resolve",
-    "IP-CIDR,150.109.0.0/16,直连,no-resolve",
-
-    // 原有规则集
+const rules = [
     "RULE-SET,ADBlock,广告拦截",
     "RULE-SET,AdditionalFilter,广告拦截",
     "RULE-SET,SogouInput,搜狗输入法",
@@ -418,24 +228,6 @@ const enhancedRules = [
     "RULE-SET,TikTok,TikTok",
     "RULE-SET,SteamFix,直连",
     "RULE-SET,GoogleFCM,直连",
-
-    // 新增Loyalsoldier规则集
-    "RULE-SET,applications,直连",
-    "RULE-SET,private,直连",
-    "RULE-SET,reject,广告拦截",
-    "RULE-SET,icloud,苹果服务",
-    "RULE-SET,apple,苹果服务",
-    "RULE-SET,google,谷歌服务",
-    "RULE-SET,proxy,选择节点",
-    "RULE-SET,gfw,选择节点",
-    "RULE-SET,tld-not-cn,选择节点",
-    "RULE-SET,direct,直连",
-    "RULE-SET,lancidr,直连,no-resolve",
-    "RULE-SET,cncidr,直连,no-resolve",
-    "RULE-SET,telegramcidr,Telegram,no-resolve",
-    "RULE-SET,openai,AI",
-
-    // 原有GEOSITE规则
     "GEOSITE,GOOGLE-PLAY@CN,直连",
     "GEOSITE,TELEGRAM,Telegram",
     "GEOSITE,YOUTUBE,YouTube",
@@ -456,8 +248,7 @@ const enhancedRules = [
     "MATCH,选择节点"
 ];
 
-// 增强的嗅探配置
-const enhancedSnifferConfig = {
+const snifferConfig = {
     "sniff": {
         "TLS": {
             "ports": [443, 8443],
@@ -479,6 +270,74 @@ const enhancedSnifferConfig = {
     ]
 };
 
+const dnsConfig = {
+    "enable": true,
+    "ipv6": ipv6Enabled,
+    "prefer-h3": true,
+    "enhanced-mode": "redir-host",
+    "default-nameserver": [
+        "119.29.29.29",
+        "223.5.5.5",
+    ],
+    "nameserver": [
+        "system",
+        "223.5.5.5",
+        "119.29.29.29",
+        "180.184.1.1",
+    ],
+    "fallback": [
+        "quic://dns0.eu",
+        "https://dns.cloudflare.com/dns-query",
+        "https://dns.sb/dns-query",
+        "tcp://208.67.222.222",
+        "tcp://8.26.56.2"
+    ],
+    "proxy-server-nameserver": [
+        "quic://223.5.5.5",
+        "tls://dot.pub",
+    ]
+};
+
+const dnsConfig2 = {
+    // 提供使用 FakeIP 的 DNS 配置
+    "enable": true,
+    "ipv6": ipv6Enabled,
+    "prefer-h3": true,
+    "enhanced-mode": "fake-ip",
+    "fake-ip-filter": [
+        "geosite:private",
+        "geosite:connectivity-check",
+        "geosite:cn",
+        "Mijia Cloud",
+        "dig.io.mi.com",
+        "localhost.ptlogin2.qq.com",
+        "*.icloud.com",
+        "*.stun.*.*",
+        "*.stun.*.*.*"
+    ],
+    "default-nameserver": [
+        "119.29.29.29",
+        "223.5.5.5",
+    ],
+    "nameserver": [
+        "system",
+        "223.5.5.5",
+        "119.29.29.29",
+        "180.184.1.1",
+    ],
+    "fallback": [
+        "quic://dns0.eu",
+        "https://dns.cloudflare.com/dns-query",
+        "https://dns.sb/dns-query",
+        "tcp://208.67.222.222",
+        "tcp://8.26.56.2"
+    ],
+    "proxy-server-nameserver": [
+        "quic://223.5.5.5",
+        "tls://dot.pub",
+    ]
+};
+
 const geoxURL = {
     "geoip": "https://cdn.jsdelivr.net/gh/Loyalsoldier/v2ray-rules-dat@release/geoip.dat",
     "geosite": "https://cdn.jsdelivr.net/gh/Loyalsoldier/v2ray-rules-dat@release/geosite.dat",
@@ -486,7 +345,7 @@ const geoxURL = {
     "asn": "https://cdn.jsdelivr.net/gh/Loyalsoldier/geoip@release/GeoLite2-ASN.mmdb"
 };
 
-// 地区元数据 - 扩展更多地区
+// 地区元数据
 const countriesMeta = {
     "香港": {
         pattern: "(?i)香港|港|HK|hk|Hong Kong|HongKong|hongkong|🇭🇰",
@@ -552,66 +411,6 @@ const countriesMeta = {
         pattern: "(?i)马来西亚|马来|MY|Malaysia|🇲🇾",
         icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Malaysia.png"
     },
-    "荷兰": {
-        pattern: "(?i)荷兰|NL|Netherlands|🇳🇱",
-        icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/flags/nl.svg"
-    },
-    "瑞士": {
-        pattern: "(?i)瑞士|CH|Switzerland|🇨🇭",
-        icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/flags/ch.svg"
-    },
-    "瑞典": {
-        pattern: "(?i)瑞典|SE|Sweden|🇸🇪",
-        icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/flags/se.svg"
-    },
-    "挪威": {
-        pattern: "(?i)挪威|NO|Norway|🇳🇴",
-        icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/flags/no.svg"
-    },
-    "芬兰": {
-        pattern: "(?i)芬兰|FI|Finland|🇫🇮",
-        icon: "https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Finland.png"
-    },
-    "丹麦": {
-        pattern: "(?i)丹麦|DK|Denmark|🇩🇰",
-        icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev.github.io@main/docs/assets/icons/flags/dk.svg"
-    },
-    "意大利": {
-        pattern: "(?i)意大利|IT|Italy|🇮🇹",
-        icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/flags/it.svg"
-    },
-    "西班牙": {
-        pattern: "(?i)西班牙|ES|Spain|🇪🇸",
-        icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/flags/es.svg"
-    },
-    "奥地利": {
-        pattern: "(?i)奥地利|AT|Austria|🇦🇹",
-        icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/flags/at.svg"
-    },
-    "比利时": {
-        pattern: "(?i)比利时|BE|Belgium|🇧🇪",
-        icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/flags/be.svg"
-    },
-    "菲律宾": {
-        pattern: "(?i)菲律宾|PH|Philippines|🇵🇭",
-        icon: "https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Philippines.png"
-    },
-    "阿根廷": {
-        pattern: "(?i)阿根廷|AR|Argentina|🇦🇷",
-        icon: "https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Argentina.png"
-    },
-    "印度尼西亚": {
-        pattern: "(?i)印尼|印度尼西亚|ID|Indonesia|🇮🇩",
-        icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/flags/id.svg"
-    },
-    "越南": {
-        pattern: "(?i)越南|VN|Vietnam|🇻🇳",
-        icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/flags/vn.svg"
-    },
-    "巴西": {
-        pattern: "(?i)巴西|BR|Brazil|🇧🇷",
-        icon: "https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Brazil.png"
-    }
 };
 
 // 健康检查配置模板 - 来自test2的优秀特性
@@ -726,6 +525,7 @@ function parseCountries(config) {
     return result;   // [{ country: 'Japan', count: 12 }, ...]
 }
 
+
 function buildCountryProxyGroups(countryList) {
     // 获取实际存在的地区列表
     const countryProxyGroups = [];
@@ -751,8 +551,7 @@ function buildCountryProxyGroups(countryList) {
                     "url": "https://cp.cloudflare.com/generate_204",
                     "interval": 60,
                     "tolerance": 20,
-                    "lazy": false,
-                    "health-check": healthCheckTemplates.standard
+                    "lazy": false
                 });
             }
 
@@ -781,7 +580,9 @@ function buildProxyGroups({
         ...defaultSelector.filter(name => name !== "落地节点" && name !== "故障转移")
     ];
 
-    const baseGroups = [
+
+    // 过滤掉 null 值
+    return [
         {
             "name": "自动优选",
             "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Auto.png",
@@ -833,7 +634,7 @@ function buildProxyGroups({
             "lazy": false,
             "health-check": healthCheckTemplates.standard
         },
-        // 负载均衡组 - 来自test2的优秀特性
+        // 负载均衡组
         {
             ...groupBaseOption,
             "name": "负载均衡(散列)", // 适合：流媒体、游戏、需要会话保持的服务
@@ -995,9 +796,7 @@ function buildProxyGroups({
             "health-check": healthCheckTemplates.standard
         } : null,
         ...countryProxyGroups
-    ].filter(Boolean); // 过滤掉 null 值
-
-    return baseGroups;
+    ].filter(Boolean);
 }
 
 function main(config) {
@@ -1029,7 +828,6 @@ function main(config) {
         defaultFallback
     });
 
-    // 如果启用完整配置
     if (fullConfig) Object.assign(config, {
         "mixed-port": 7890,
         "redir-port": 7892,
@@ -1047,19 +845,15 @@ function main(config) {
         "disable-keep-alive": !keepAliveEnabled,
         "profile": {
             "store-selected": true,
-            "store-fake-ip": true   // 存储fake-ip映射
         }
     });
 
-    // 全局客户端配置
-    config["global-client-fingerprint"] = "chrome"; // 使用Chrome指纹
-
     Object.assign(config, {
         "proxy-groups": proxyGroups,
-        "rule-providers": enhancedRuleProviders,
-        "rules": enhancedRules,
-        "sniffer": enhancedSnifferConfig,
-        "dns": enhancedDnsConfig,
+        "rule-providers": ruleProviders,
+        "rules": rules,
+        "sniffer": snifferConfig,
+        "dns": fakeIPEnabled ? dnsConfig2 : dnsConfig,
         "geodata-mode": true,
         "geox-url": geoxURL,
     });
