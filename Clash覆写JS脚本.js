@@ -33,7 +33,7 @@ function buildBaseLists({landing, lowCost, countryInfo}) {
 
     // defaultSelector (选择节点 组里展示的候选)
     // 故障转移, 落地节点(可选), 各地区节点, 低倍率节点(可选), 手动选择, DIRECT
-    const selector = ["自动优选", "故障转移"]; // 把 fallback 放在最前
+    const selector = ["延迟优选", "故障转移"]; // 把 fallback 放在最前
     if (landing) selector.push("落地节点");
     selector.push(...countryGroupNames);
     if (lowCost) selector.push("低倍率节点");
@@ -41,7 +41,7 @@ function buildBaseLists({landing, lowCost, countryInfo}) {
 
     // defaultProxies (各分类策略引用)
     // 选择节点, 各地区节点, 低倍率节点(可选), 手动选择, 直连
-    const defaultProxies = ["选择节点", ...countryGroupNames];
+    const defaultProxies = ["选择节点", "延迟优选", ...countryGroupNames];
     if (lowCost) defaultProxies.push("低倍率节点");
     defaultProxies.push("手动选择", "直连");
 
@@ -473,7 +473,7 @@ const countriesMeta = {
     }
 };
 
-// 健康检查配置模板 - 来自test2的优秀特性
+// 健康检查配置模板
 const healthCheckTemplates = {
     // 高敏感度测速
     highSensitive: {
@@ -811,7 +811,6 @@ function buildProxyGroups({
                 "直连", "REJECT"
             ]
         },
-        // 新增服务组 - 来自test2
         {
             "name": "谷歌服务",
             "icon": "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/google.svg",
