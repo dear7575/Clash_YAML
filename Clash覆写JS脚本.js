@@ -217,7 +217,6 @@ const ruleProviders = {
 const rules = [
     "RULE-SET,ADBlock,广告拦截",
     "RULE-SET,AdditionalFilter,广告拦截",
-    "RULE-SET,SogouInput,搜狗输入法",
     "RULE-SET,TruthSocial,Truth Social",
     "RULE-SET,StaticResources,静态资源",
     "RULE-SET,CDNResources,静态资源",
@@ -802,14 +801,6 @@ function buildProxyGroups({
             "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Server.png",
             "type": "select",
             "proxies": defaultProxies
-        },
-        {
-            "name": "搜狗输入法",
-            "icon": "https://cdn.jsdelivr.net/gh/powerfullz/override-rules@master/icons/Sougou.png",
-            "type": "select",
-            "proxies": [
-                "直连", "REJECT"
-            ]
         },
         {
             "name": "谷歌服务",
