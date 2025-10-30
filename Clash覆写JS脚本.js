@@ -664,7 +664,7 @@ function buildProxyGroups({
         },
         {
             "name": "手动选择",
-            "icon": "https://cdn.jsdmirror.com/gh/shindgewongxj/WHATSINStash@master/icon/select.png",
+            "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Available.png",
             "include-all": true,
             "type": "select"
         },
