@@ -113,6 +113,12 @@ const ruleProviders = {
         "path": "./ruleset/FirebaseCloudMessaging.list",
         "url": "https://cdn.jsdelivr.net/gh/powerfullz/override-rules@master/ruleset/FirebaseCloudMessaging.list",
     },
+    "Google": {
+        "type": "http", "format": "yaml", "interval": 86400,
+        "behavior": "domain",
+        "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/google.txt",
+        "path": "./ruleset/loyalsoldier/google.yaml"
+    },
     "AdditionalFilter": {
         "type": "http", "behavior": "classical", "format": "text", "interval": 86400,
         "url": "https://cdn.jsdelivr.net/gh/powerfullz/override-rules@master/ruleset/AdditionalFilter.list",
@@ -226,6 +232,7 @@ const rules = [
     "RULE-SET,EHentai,E-Hentai",
     "RULE-SET,TikTok,TikTok",
     "RULE-SET,SteamFix,直连",
+    "RULE-SET,Google,谷歌服务",
     "RULE-SET,GoogleFCM,直连",
     "GEOSITE,GOOGLE-PLAY@CN,直连",
     "GEOSITE,TELEGRAM,Telegram",
@@ -647,7 +654,7 @@ function buildProxyGroups({
             "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Auto.png",
             "type": "url-test",
             "include-all": true,
-            "filter": "^((?!(DIRECTLY|DIRECT|Proxy|Traffic|Expire|Expired|过期|到期|套餐|剩余|流量|官网|超时|失效|Invalid|Test|测速|本地|Local)).)*$",
+            "filter": "^((?!(DIRECTLY|DIRECT|Proxy|Traffic|Expire|Expired|FRP代理|过期|到期|套餐|剩余|流量|官网|超时|失效|Invalid|Test|测速|本地|Local)).)*$",
             "url": "https://cp.cloudflare.com/generate_204",
             "interval": 300,
             "tolerance": 50,
