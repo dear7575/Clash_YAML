@@ -152,12 +152,6 @@ const ruleProviders = {
         "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/apple.txt",
         "path": "./ruleset/loyalsoldier/apple.yaml"
     },
-    "google": {
-        "type": "http", "format": "yaml", "interval": 86400,
-        "behavior": "domain",
-        "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/google.txt",
-        "path": "./ruleset/loyalsoldier/google.yaml"
-    },
     "proxy": {
         "type": "http", "format": "yaml", "interval": 86400,
         "behavior": "domain",
