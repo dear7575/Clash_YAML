@@ -108,11 +108,6 @@ const ruleProviders = {
         "url": "https://cdn.jsdelivr.net/gh/powerfullz/override-rules@master/ruleset/SteamFix.list",
         "path": "./ruleset/SteamFix.list"
     },
-    "GoogleFCM": {
-        "type": "http", "behavior": "classical", "interval": 86400, "format": "text",
-        "path": "./ruleset/FirebaseCloudMessaging.list",
-        "url": "https://cdn.jsdelivr.net/gh/powerfullz/override-rules@master/ruleset/FirebaseCloudMessaging.list",
-    },
     "Google": {
         "type": "http", "format": "yaml", "interval": 86400,
         "behavior": "domain",
@@ -227,8 +222,6 @@ const rules = [
     "RULE-SET,TikTok,TikTok",
     "RULE-SET,SteamFix,直连",
     "RULE-SET,Google,谷歌服务",
-    "RULE-SET,GoogleFCM,直连",
-    "GEOSITE,GOOGLE-PLAY@CN,直连",
     "GEOSITE,TELEGRAM,Telegram",
     "GEOSITE,YOUTUBE,YouTube",
     "GEOSITE,NETFLIX,Netflix",
