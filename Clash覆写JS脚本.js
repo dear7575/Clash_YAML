@@ -80,7 +80,7 @@ const ruleProviders = {
     },
     "AI": {
         "type": "http", "behavior": "domain", "format": "mrs", "interval": 86400,
-        "url": "https://github.com/MetaCubeX/meta-rules-dat/blob/refs/heads/meta/geo/geosite/category-ai-!cn.mrs",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-ai-!cn.mrs",
         "path": "./ruleset/AI.mrs"
     },
     "TikTok": {
@@ -90,7 +90,7 @@ const ruleProviders = {
     },
     "Google": {
         "type": "http", "behavior": "domain", "format": "mrs", "interval": 86400,
-        "url": "https://github.com/MetaCubeX/meta-rules-dat/blob/refs/heads/meta/geo/geosite/google.mrs",
+        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/google.mrs",
         "path": "./ruleset/google.mrs"
     },
     "AdditionalFilter": {
