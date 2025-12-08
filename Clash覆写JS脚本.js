@@ -79,9 +79,9 @@ const ruleProviders = {
         "path": "./ruleset/CDNResources.txt"
     },
     "AI": {
-        "type": "http", "behavior": "domain", "format": "text", "interval": 86400,
-        "url": "https://github.com/MetaCubeX/meta-rules-dat/blob/refs/heads/meta/geo/geosite/category-ai-!cn.list",
-        "path": "./ruleset/AI.list"
+        "type": "http", "behavior": "domain", "format": "mrs", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/blob/refs/heads/meta/geo/geosite/category-ai-!cn.mrs",
+        "path": "./ruleset/AI.mrs"
     },
     "TikTok": {
         "type": "http", "behavior": "classical", "format": "text", "interval": 86400,
@@ -89,10 +89,9 @@ const ruleProviders = {
         "path": "./ruleset/TikTok.list"
     },
     "Google": {
-        "type": "http", "behavior": "domain", "format": "text", "interval": 86400,
-        "behavior": "domain",
-        "url": "https://github.com/MetaCubeX/meta-rules-dat/blob/refs/heads/meta/geo/geosite/google.list",
-        "path": "./ruleset/google.list"
+        "type": "http", "behavior": "domain", "format": "mrs", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/blob/refs/heads/meta/geo/geosite/google.mrs",
+        "path": "./ruleset/google.mrs"
     },
     "AdditionalFilter": {
         "type": "http", "behavior": "classical", "format": "text", "interval": 86400,
@@ -110,80 +109,67 @@ const ruleProviders = {
         "path": "./ruleset/Crypto.list"
     },
     "reject": {
-        "type": "http", "format": "yaml", "interval": 86400,
-        "behavior": "domain",
+        "type": "http", "behavior": "domain", "format": "yaml", "interval": 86400,
         "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/reject.txt",
         "path": "./ruleset/loyalsoldier/reject.yaml"
     },
     "icloud": {
-        "type": "http", "format": "yaml", "interval": 86400,
-        "behavior": "domain",
+        "type": "http", "behavior": "domain", "format": "yaml", "interval": 86400,
         "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/icloud.txt",
         "path": "./ruleset/loyalsoldier/icloud.yaml"
     },
     "apple": {
-        "type": "http", "format": "yaml", "interval": 86400,
-        "behavior": "domain",
+        "type": "http", "behavior": "domain", "format": "yaml", "interval": 86400,
         "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/apple.txt",
         "path": "./ruleset/loyalsoldier/apple.yaml"
     },
     "proxy": {
-        "type": "http", "format": "yaml", "interval": 86400,
-        "behavior": "domain",
+        "type": "http", "behavior": "domain", "format": "yaml", "interval": 86400,
         "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/proxy.txt",
         "path": "./ruleset/loyalsoldier/proxy.yaml"
     },
     "direct": {
-        "type": "http", "format": "yaml", "interval": 86400,
-        "behavior": "domain",
+        "type": "http", "behavior": "domain", "format": "yaml", "interval": 86400,
         "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/direct.txt",
         "path": "./ruleset/loyalsoldier/direct.yaml"
     },
     "private": {
-        "type": "http", "format": "yaml", "interval": 86400,
-        "behavior": "domain",
+        "type": "http", "behavior": "domain", "format": "yaml", "interval": 86400,
         "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/private.txt",
         "path": "./ruleset/loyalsoldier/private.yaml"
     },
     "gfw": {
-        "type": "http", "format": "yaml", "interval": 86400,
-        "behavior": "domain",
+        "type": "http", "behavior": "domain", "format": "yaml", "interval": 86400,
         "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/gfw.txt",
         "path": "./ruleset/loyalsoldier/gfw.yaml"
     },
     "tld-not-cn": {
-        "type": "http", "format": "yaml", "interval": 86400,
-        "behavior": "domain",
+        "type": "http", "behavior": "domain", "format": "yaml", "interval": 86400,
         "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/tld-not-cn.txt",
         "path": "./ruleset/loyalsoldier/tld-not-cn.yaml"
     },
     "telegramcidr": {
-        "type": "http", "format": "yaml", "interval": 86400,
-        "behavior": "ipcidr",
+        "type": "http", "behavior": "ipcidr", "format": "yaml", "interval": 86400,
         "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/telegramcidr.txt",
         "path": "./ruleset/loyalsoldier/telegramcidr.yaml"
     },
     "cncidr": {
-        "type": "http", "format": "yaml", "interval": 86400,
-        "behavior": "ipcidr",
+        "type": "http", "behavior": "ipcidr", "format": "yaml", "interval": 86400,
         "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/cncidr.txt",
         "path": "./ruleset/loyalsoldier/cncidr.yaml"
     },
     "lancidr": {
-        "type": "http", "format": "yaml", "interval": 86400,
-        "behavior": "ipcidr",
+        "type": "http", "behavior": "ipcidr", "format": "yaml", "interval": 86400,
         "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/lancidr.txt",
         "path": "./ruleset/loyalsoldier/lancidr.yaml"
     },
     "applications": {
-        "type": "http", "format": "yaml", "interval": 86400,
-        "behavior": "classical",
+        "type": "http", "behavior": "classical", "format": "yaml", "interval": 86400,
         "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/applications.txt",
         "path": "./ruleset/loyalsoldier/applications.yaml"
     },
     "openai": {
-        "type": "http", "format": "yaml", "interval": 86400,
-        "behavior": "classical",
+        "type": "http", "behavior": "classical", "format": "yaml", "interval": 86400,
         "url": "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/OpenAI/OpenAI.yaml",
         "path": "./ruleset/blackmatrix7/openai.yaml"
     }
