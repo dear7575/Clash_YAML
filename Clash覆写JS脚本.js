@@ -13,7 +13,7 @@
 
 const inArg = typeof $arguments !== 'undefined' ? $arguments : {};
 const loadBalance = parseBool(inArg.loadbalance) || true,
-    landing = parseBool(inArg.landing) || true,
+    landing = parseBool(inArg.landing) || false,
     ipv6Enabled = parseBool(inArg.ipv6) || false,
     fullConfig = parseBool(inArg.full) || false,
     keepAliveEnabled = parseBool(inArg.keepalive) || false,
