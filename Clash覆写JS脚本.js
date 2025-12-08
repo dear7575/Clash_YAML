@@ -79,7 +79,7 @@ const ruleProviders = {
         "path": "./ruleset/CDNResources.txt"
     },
     "AI": {
-        "type": "http", "behavior": "classical", "format": "mrs", "interval": 86400,
+        "type": "http", "behavior": "domain", "format": "mrs", "interval": 86400,
         "url": "https://github.com/MetaCubeX/meta-rules-dat/blob/refs/heads/meta/geo/geosite/category-ai-chat-!cn.mrs",
         "path": "./ruleset/AI.mrs"
     },
@@ -94,7 +94,7 @@ const ruleProviders = {
         "path": "./ruleset/SteamFix.list"
     },
     "Google": {
-        "type": "http", "format": "mrs", "interval": 86400,
+        "type": "http", "behavior": "domain", "format": "mrs", "interval": 86400,
         "behavior": "domain",
         "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/google.mrs",
         "path": "./ruleset/google.mrs"
