@@ -1,22 +1,23 @@
-/*
-powerfullz 的 Substore 订阅转换脚本 - 修改自用版
-https://github.com/powerfullz/override-rules
-传入参数：
-- loadbalance: 启用负载均衡 (默认false)
-- landing: 启用落地节点功能 (默认false)
-- ipv6: 启用 IPv6 支持 (默认false)
-- full: 启用完整配置，用于纯内核启动 (默认false)
-- keepalive: 启用 tcp-keep-alive (默认false)
-- fakeip: DNS 使用 FakeIP 而不是 RedirHost (默认false)
-*/
+/**
+ * 修改自用版 clash 覆写 js 脚本
+ * 原作者：powerfullz
+ * @author dear7575
+ * 传入参数：
+ * - loadbalance: 启用负载均衡 (默认false)
+ * - landing: 启用落地节点功能 (默认false)
+ * - ipv6: 启用 IPv6 支持 (默认false)
+ * - full: 启用完整配置，用于纯内核启动 (默认false)
+ * - keepalive: 启用 tcp-keep-alive (默认false)
+ * - fakeip: DNS 使用 FakeIP 而不是 RedirHost (默认false)
+ */
 
 const inArg = typeof $arguments !== 'undefined' ? $arguments : {};
-const loadBalance = parseBool(inArg.loadbalance) || false,
-    landing = parseBool(inArg.landing) || false,
+const loadBalance = parseBool(inArg.loadbalance) || true,
+    landing = parseBool(inArg.landing) || true,
     ipv6Enabled = parseBool(inArg.ipv6) || false,
     fullConfig = parseBool(inArg.full) || false,
     keepAliveEnabled = parseBool(inArg.keepalive) || false,
-    fakeIPEnabled = parseBool(inArg.fakeip) || false;
+    fakeIPEnabled = parseBool(inArg.fakeip) || true;
 
 function parseBool(value) {
     if (typeof value === "boolean") return value;
