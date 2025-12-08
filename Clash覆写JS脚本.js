@@ -1,5 +1,5 @@
 /*
-powerfullz 的 Substore 订阅转换脚本 - 自用版
+powerfullz 的 Substore 订阅转换脚本 - 修改自用版
 https://github.com/powerfullz/override-rules
 传入参数：
 - loadbalance: 启用负载均衡 (默认false)
@@ -63,10 +63,225 @@ function buildBaseLists({landing, lowCost, countryInfo}) {
 }
 
 const ruleProviders = {
-    "ADBlock": {
-        "type": "http", "behavior": "domain", "format": "mrs", "interval": 86400,
+    "category-ads-all": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
         "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/category-ads-all.mrs",
-        "path": "./ruleset/ADBlock.mrs"
+        "path": "./ruleset/category-ads-all.mrs"
+    },
+    "category-ai-chat-!cn": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/category-ai-chat-!cn.mrs",
+        "path": "./ruleset/category-ai-chat-!cn.mrs"
+    },
+    "youtube": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/youtube.mrs",
+        "path": "./ruleset/youtube.mrs"
+    },
+    "google-mrs": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/google.mrs",
+        "path": "./ruleset/google-mrs.mrs"
+    },
+    "private-mrs": {
+        "type": "http", "format": "mrs", "behavior": "ipcidr", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geoip/private.mrs",
+        "path": "./ruleset/private-mrs.mrs"
+    },
+    "geolocation-cn": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/geolocation-cn.mrs",
+        "path": "./ruleset/geolocation-cn.mrs"
+    },
+    "cn-mrs": {
+        "type": "http", "format": "mrs", "behavior": "ipcidr", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geoip/cn.mrs",
+        "path": "./ruleset/cn-mrs.mrs"
+    },
+    "telegram-mrs": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/telegram.mrs",
+        "path": "./ruleset/telegram-mrs.mrs"
+    },
+    "github": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/github.mrs",
+        "path": "./ruleset/github.mrs"
+    },
+    "gitlab": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/gitlab.mrs",
+        "path": "./ruleset/gitlab.mrs"
+    },
+    "microsoft-mrs": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/microsoft.mrs",
+        "path": "./ruleset/microsoft-mrs.mrs"
+    },
+    "apple-mrs": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/apple.mrs",
+        "path": "./ruleset/apple-mrs.mrs"
+    },
+    "facebook": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/facebook.mrs",
+        "path": "./ruleset/facebook.mrs"
+    },
+    "instagram": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/instagram.mrs",
+        "path": "./ruleset/instagram.mrs"
+    },
+    "twitter": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/twitter.mrs",
+        "path": "./ruleset/twitter.mrs"
+    },
+    "tiktok-mrs": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/tiktok.mrs",
+        "path": "./ruleset/tiktok-mrs.mrs"
+    },
+    "linkedin": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/linkedin.mrs",
+        "path": "./ruleset/linkedin.mrs"
+    },
+    "netflix-mrs": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/netflix.mrs",
+        "path": "./ruleset/netflix-mrs.mrs"
+    },
+    "hulu": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/hulu.mrs",
+        "path": "./ruleset/hulu.mrs"
+    },
+    "disney": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/disney.mrs",
+        "path": "./ruleset/disney.mrs"
+    },
+    "hbo": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/hbo.mrs",
+        "path": "./ruleset/hbo.mrs"
+    },
+    "amazon": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/amazon.mrs",
+        "path": "./ruleset/amazon.mrs"
+    },
+    "bahamut-mrs": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/bahamut.mrs",
+        "path": "./ruleset/bahamut-mrs.mrs"
+    },
+    "steam": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/steam.mrs",
+        "path": "./ruleset/steam.mrs"
+    },
+    "epicgames": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/epicgames.mrs",
+        "path": "./ruleset/epicgames.mrs"
+    },
+    "ea": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/ea.mrs",
+        "path": "./ruleset/ea.mrs"
+    },
+    "ubisoft": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/ubisoft.mrs",
+        "path": "./ruleset/ubisoft.mrs"
+    },
+    "blizzard": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/blizzard.mrs",
+        "path": "./ruleset/blizzard.mrs"
+    },
+    "coursera": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/coursera.mrs",
+        "path": "./ruleset/coursera.mrs"
+    },
+    "edx": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/edx.mrs",
+        "path": "./ruleset/edx.mrs"
+    },
+    "udemy": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/udemy.mrs",
+        "path": "./ruleset/udemy.mrs"
+    },
+    "khanacademy": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/khanacademy.mrs",
+        "path": "./ruleset/khanacademy.mrs"
+    },
+    "category-scholar-!cn": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/category-scholar-!cn.mrs",
+        "path": "./ruleset/category-scholar-!cn.mrs"
+    },
+    "paypal": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/paypal.mrs",
+        "path": "./ruleset/paypal.mrs"
+    },
+    "visa": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/visa.mrs",
+        "path": "./ruleset/visa.mrs"
+    },
+    "mastercard": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/mastercard.mrs",
+        "path": "./ruleset/mastercard.mrs"
+    },
+    "stripe": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/stripe.mrs",
+        "path": "./ruleset/stripe.mrs"
+    },
+    "wise": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/wise.mrs",
+        "path": "./ruleset/wise.mrs"
+    },
+    "aws": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/aws.mrs",
+        "path": "./ruleset/aws.mrs"
+    },
+    "azure": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/azure.mrs",
+        "path": "./ruleset/azure.mrs"
+    },
+    "digitalocean": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/digitalocean.mrs",
+        "path": "./ruleset/digitalocean.mrs"
+    },
+    "heroku": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/heroku.mrs",
+        "path": "./ruleset/heroku.mrs"
+    },
+    "dropbox": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/dropbox.mrs",
+        "path": "./ruleset/dropbox.mrs"
+    },
+    "geolocation-!cn": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/geolocation-!cn.mrs",
+        "path": "./ruleset/geolocation-!cn.mrs"
     },
     "StaticResources": {
         "type": "http", "behavior": "domain", "format": "text", "interval": 86400,
@@ -78,32 +293,7 @@ const ruleProviders = {
         "url": "https://ruleset.skk.moe/Clash/non_ip/cdn.txt",
         "path": "./ruleset/CDNResources.txt"
     },
-    "AI": {
-        "type": "http", "behavior": "domain", "format": "mrs", "interval": 86400,
-        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-ai-!cn.mrs",
-        "path": "./ruleset/AI.mrs"
-    },
-    "TikTok": {
-        "type": "http", "behavior": "classical", "format": "text", "interval": 86400,
-        "url": "https://cdn.jsdelivr.net/gh/powerfullz/override-rules@master/ruleset/TikTok.list",
-        "path": "./ruleset/TikTok.list"
-    },
-    "Google": {
-        "type": "http", "behavior": "domain", "format": "mrs", "interval": 86400,
-        "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/google.mrs",
-        "path": "./ruleset/google.mrs"
-    },
-    "AdditionalFilter": {
-        "type": "http", "behavior": "classical", "format": "text", "interval": 86400,
-        "url": "https://cdn.jsdelivr.net/gh/powerfullz/override-rules@master/ruleset/AdditionalFilter.list",
-        "path": "./ruleset/AdditionalFilter.list"
-    },
-    "AdditionalCDNResources": {
-        "type": "http", "behavior": "classical", "format": "text", "interval": 86400,
-        "url": "https://cdn.jsdelivr.net/gh/powerfullz/override-rules@master/ruleset/AdditionalCDNResources.list",
-        "path": "./ruleset/AdditionalCDNResources.list"
-    },
-    "Crypto": {
+    "crypto": {
         "type": "http", "behavior": "classical", "format": "text", "interval": 86400,
         "url": "https://cdn.jsdelivr.net/gh/powerfullz/override-rules@master/ruleset/Crypto.list",
         "path": "./ruleset/Crypto.list"
@@ -111,91 +301,113 @@ const ruleProviders = {
     "reject": {
         "type": "http", "behavior": "domain", "format": "yaml", "interval": 86400,
         "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/reject.txt",
-        "path": "./ruleset/loyalsoldier/reject.yaml"
+        "path": "./ruleset/reject.yaml"
     },
     "icloud": {
         "type": "http", "behavior": "domain", "format": "yaml", "interval": 86400,
         "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/icloud.txt",
-        "path": "./ruleset/loyalsoldier/icloud.yaml"
+        "path": "./ruleset/icloud.yaml"
     },
     "apple": {
         "type": "http", "behavior": "domain", "format": "yaml", "interval": 86400,
         "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/apple.txt",
-        "path": "./ruleset/loyalsoldier/apple.yaml"
+        "path": "./ruleset/apple.yaml"
     },
     "proxy": {
         "type": "http", "behavior": "domain", "format": "yaml", "interval": 86400,
         "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/proxy.txt",
-        "path": "./ruleset/loyalsoldier/proxy.yaml"
+        "path": "./ruleset/proxy.yaml"
     },
     "direct": {
         "type": "http", "behavior": "domain", "format": "yaml", "interval": 86400,
         "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/direct.txt",
-        "path": "./ruleset/loyalsoldier/direct.yaml"
+        "path": "./ruleset/direct.yaml"
     },
     "private": {
         "type": "http", "behavior": "domain", "format": "yaml", "interval": 86400,
         "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/private.txt",
-        "path": "./ruleset/loyalsoldier/private.yaml"
+        "path": "./ruleset/private.yaml"
     },
     "gfw": {
         "type": "http", "behavior": "domain", "format": "yaml", "interval": 86400,
         "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/gfw.txt",
-        "path": "./ruleset/loyalsoldier/gfw.yaml"
+        "path": "./ruleset/gfw.yaml"
     },
     "tld-not-cn": {
         "type": "http", "behavior": "domain", "format": "yaml", "interval": 86400,
         "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/tld-not-cn.txt",
-        "path": "./ruleset/loyalsoldier/tld-not-cn.yaml"
-    },
-    "telegramcidr": {
-        "type": "http", "behavior": "ipcidr", "format": "yaml", "interval": 86400,
-        "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/telegramcidr.txt",
-        "path": "./ruleset/loyalsoldier/telegramcidr.yaml"
+        "path": "./ruleset/tld-not-cn.yaml"
     },
     "cncidr": {
         "type": "http", "behavior": "ipcidr", "format": "yaml", "interval": 86400,
         "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/cncidr.txt",
-        "path": "./ruleset/loyalsoldier/cncidr.yaml"
+        "path": "./ruleset/cncidr.yaml"
     },
     "lancidr": {
         "type": "http", "behavior": "ipcidr", "format": "yaml", "interval": 86400,
         "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/lancidr.txt",
-        "path": "./ruleset/loyalsoldier/lancidr.yaml"
+        "path": "./ruleset/lancidr.yaml"
     },
     "applications": {
         "type": "http", "behavior": "classical", "format": "yaml", "interval": 86400,
         "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/applications.txt",
-        "path": "./ruleset/loyalsoldier/applications.yaml"
-    },
-    "openai": {
-        "type": "http", "behavior": "classical", "format": "yaml", "interval": 86400,
-        "url": "https://fastly.jsdelivr.net/gh/blackmatrix7/ios_rule_script@master/rule/Clash/OpenAI/OpenAI.yaml",
-        "path": "./ruleset/blackmatrix7/openai.yaml"
+        "path": "./ruleset/applications.yaml"
     }
 }
 
 const rules = [
-    "RULE-SET,ADBlock,广告拦截",
-    "RULE-SET,AdditionalFilter,广告拦截",
+    "RULE-SET,category-ads-all,广告拦截",
+    "RULE-SET,category-ai-chat-!cn,AI",
+    "RULE-SET,youtube,YouTube",
+    "RULE-SET,coursera,选择节点",
+    "RULE-SET,edx,选择节点",
+    "RULE-SET,udemy,选择节点",
+    "RULE-SET,khanacademy,选择节点",
+    "RULE-SET,category-scholar-!cn,选择节点",
+    "RULE-SET,google-mrs,谷歌服务",
+    "RULE-SET,private-mrs,直连",
+    "RULE-SET,geolocation-cn,直连",
+    "RULE-SET,cn-mrs,直连",
+    "RULE-SET,telegram-mrs,Telegram",
+    "RULE-SET,github,选择节点",
+    "RULE-SET,gitlab,选择节点",
+    "RULE-SET,microsoft-mrs,微软服务",
+    "RULE-SET,apple-mrs,苹果服务",
+    "RULE-SET,facebook,选择节点",
+    "RULE-SET,instagram,选择节点",
+    "RULE-SET,twitter,选择节点",
+    "RULE-SET,tiktok-mrs,TikTok",
+    "RULE-SET,linkedin,选择节点",
+    "RULE-SET,netflix-mrs,Netflix",
+    "RULE-SET,hulu,选择节点",
+    "RULE-SET,disney,选择节点",
+    "RULE-SET,hbo,选择节点",
+    "RULE-SET,amazon,选择节点",
+    "RULE-SET,bahamut-mrs,Bahamut",
+    "RULE-SET,steam,选择节点",
+    "RULE-SET,epicgames,选择节点",
+    "RULE-SET,ea,选择节点",
+    "RULE-SET,ubisoft,选择节点",
+    "RULE-SET,blizzard,选择节点",
+    "RULE-SET,paypal,选择节点",
+    "RULE-SET,visa,选择节点",
+    "RULE-SET,mastercard,选择节点",
+    "RULE-SET,stripe,选择节点",
+    "RULE-SET,wise,选择节点",
+    "RULE-SET,aws,选择节点",
+    "RULE-SET,azure,选择节点",
+    "RULE-SET,digitalocean,选择节点",
+    "RULE-SET,heroku,选择节点",
+    "RULE-SET,dropbox,选择节点",
+    "RULE-SET,geolocation-!cn,选择节点",
     "RULE-SET,StaticResources,静态资源",
     "RULE-SET,CDNResources,静态资源",
-    "RULE-SET,AdditionalCDNResources,静态资源",
-    "RULE-SET,AI,AI",
-    "RULE-SET,Crypto,Crypto",
-    "RULE-SET,TikTok,TikTok",
-    "RULE-SET,Google,谷歌服务",
-    "GEOSITE,TELEGRAM,Telegram",
-    "GEOSITE,YOUTUBE,YouTube",
-    "GEOSITE,NETFLIX,Netflix",
+    "RULE-SET,crypto,Crypto",
     "GEOSITE,SPOTIFY,Spotify",
-    "GEOSITE,BAHAMUT,Bahamut",
     "GEOSITE,BILIBILI,Bilibili",
-    "GEOSITE,MICROSOFT@CN,直连",
     "GEOSITE,PIKPAK,PikPak",
     "GEOSITE,GFW,选择节点",
     "GEOSITE,CN,直连",
-    "GEOSITE,PRIVATE,直连",
     "GEOIP,NETFLIX,Netflix,no-resolve",
     "GEOIP,TELEGRAM,Telegram,no-resolve",
     "GEOIP,CN,直连",
