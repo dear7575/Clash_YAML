@@ -43,7 +43,7 @@ function buildBaseLists({landing, lowCost, countryInfo}) {
     // 选择节点, 各地区节点, 低倍率节点(可选), 手动选择, 直连
     const defaultProxies = ["选择节点", "延迟自动", ...countryGroupNames];
     if (lowCost) defaultProxies.push("低倍率节点");
-    defaultProxies.push("手动选择", "直连");
+    defaultProxies.push("手动选择");
 
     // direct 优先的列表
     const defaultProxiesDirect = ["直连", ...countryGroupNames, "选择节点", "手动选择"]; // 直连优先
@@ -407,11 +407,11 @@ const rules = [
     "GEOSITE,BILIBILI,Bilibili",
     "GEOSITE,PIKPAK,PikPak",
     "GEOSITE,GFW,选择节点",
-    "GEOSITE,CN,直连",
+    // "GEOSITE,CN,直连",
     "GEOIP,NETFLIX,Netflix,no-resolve",
     "GEOIP,TELEGRAM,Telegram,no-resolve",
-    "GEOIP,CN,直连",
-    "GEOIP,PRIVATE,直连",
+    // "GEOIP,CN,直连",
+    // "GEOIP,PRIVATE,直连",
     "DST-PORT,22,SSH(22端口)",
     "MATCH,选择节点"
 ];
@@ -957,7 +957,7 @@ function buildProxyGroups({
             "name": "SSH(22端口)",
             "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Server.png",
             "type": "select",
-            "proxies": defaultProxies
+            "proxies": ["直连", ...defaultProxies]
         },
         {
             "name": "谷歌服务",
