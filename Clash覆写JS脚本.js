@@ -65,7 +65,7 @@ function buildBaseLists({landing, lowCost, countryInfo}) {
 const ruleProviders = {
     "ADBlock": {
         "type": "http", "behavior": "domain", "format": "mrs", "interval": 86400,
-        "url": "https://adrules.top/adrules-mihomo.mrs",
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/category-ads-all.mrs",
         "path": "./ruleset/ADBlock.mrs"
     },
     "StaticResources": {
