@@ -80,7 +80,7 @@ const ruleProviders = {
     },
     "AI": {
         "type": "http", "behavior": "domain", "format": "mrs", "interval": 86400,
-        "url": "https://github.com/MetaCubeX/meta-rules-dat/blob/refs/heads/meta/geo/geosite/category-ai-chat-!cn.mrs",
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/category-ai-chat-!cn.mrs",
         "path": "./ruleset/AI.mrs"
     },
     "TikTok": {
