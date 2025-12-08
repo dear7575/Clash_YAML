@@ -79,25 +79,20 @@ const ruleProviders = {
         "path": "./ruleset/CDNResources.txt"
     },
     "AI": {
-        "type": "http", "behavior": "domain", "format": "mrs", "interval": 86400,
-        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/category-ai-chat-!cn.mrs",
-        "path": "./ruleset/AI.mrs"
+        "type": "http", "behavior": "domain", "format": "text", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/blob/refs/heads/meta/geo/geosite/category-ai-!cn.list",
+        "path": "./ruleset/AI.list"
     },
     "TikTok": {
         "type": "http", "behavior": "classical", "format": "text", "interval": 86400,
         "url": "https://cdn.jsdelivr.net/gh/powerfullz/override-rules@master/ruleset/TikTok.list",
         "path": "./ruleset/TikTok.list"
     },
-    "SteamFix": {
-        "type": "http", "behavior": "classical", "format": "text", "interval": 86400,
-        "url": "https://cdn.jsdelivr.net/gh/powerfullz/override-rules@master/ruleset/SteamFix.list",
-        "path": "./ruleset/SteamFix.list"
-    },
     "Google": {
-        "type": "http", "behavior": "domain", "format": "mrs", "interval": 86400,
+        "type": "http", "behavior": "domain", "format": "text", "interval": 86400,
         "behavior": "domain",
-        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/google.mrs",
-        "path": "./ruleset/google.mrs"
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/blob/refs/heads/meta/geo/geosite/google.list",
+        "path": "./ruleset/google.list"
     },
     "AdditionalFilter": {
         "type": "http", "behavior": "classical", "format": "text", "interval": 86400,
@@ -203,7 +198,6 @@ const rules = [
     "RULE-SET,AI,AI",
     "RULE-SET,Crypto,Crypto",
     "RULE-SET,TikTok,TikTok",
-    "RULE-SET,SteamFix,直连",
     "RULE-SET,Google,谷歌服务",
     "GEOSITE,TELEGRAM,Telegram",
     "GEOSITE,YOUTUBE,YouTube",
