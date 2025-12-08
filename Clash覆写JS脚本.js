@@ -68,16 +68,6 @@ const ruleProviders = {
         "url": "https://adrules.top/adrules-mihomo.mrs",
         "path": "./ruleset/ADBlock.mrs"
     },
-    "TruthSocial": {
-        "url": "https://cdn.jsdelivr.net/gh/powerfullz/override-rules@master/ruleset/TruthSocial.list",
-        "path": "./ruleset/TruthSocial.list",
-        "behavior": "classical", "interval": 86400, "format": "text", "type": "http"
-    },
-    "SogouInput": {
-        "type": "http", "behavior": "classical", "format": "text", "interval": 86400,
-        "url": "https://ruleset.skk.moe/Clash/non_ip/sogouinput.txt",
-        "path": "./ruleset/SogouInput.txt"
-    },
     "StaticResources": {
         "type": "http", "behavior": "domain", "format": "text", "interval": 86400,
         "url": "https://ruleset.skk.moe/Clash/domainset/cdn.txt",
@@ -90,18 +80,13 @@ const ruleProviders = {
     },
     "AI": {
         "type": "http", "behavior": "classical", "format": "text", "interval": 86400,
-        "url": "https://ruleset.skk.moe/Clash/non_ip/ai.txt",
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/blob/refs/heads/meta/geo/geosite/category-ai-chat-!cn.list",
         "path": "./ruleset/AI.txt"
     },
     "TikTok": {
         "type": "http", "behavior": "classical", "format": "text", "interval": 86400,
         "url": "https://cdn.jsdelivr.net/gh/powerfullz/override-rules@master/ruleset/TikTok.list",
         "path": "./ruleset/TikTok.list"
-    },
-    "EHentai": {
-        "type": "http", "behavior": "classical", "format": "text", "interval": 86400,
-        "url": "https://cdn.jsdelivr.net/gh/powerfullz/override-rules@master/ruleset/EHentai.list",
-        "path": "./ruleset/EHentai.list"
     },
     "SteamFix": {
         "type": "http", "behavior": "classical", "format": "text", "interval": 86400,
@@ -111,8 +96,8 @@ const ruleProviders = {
     "Google": {
         "type": "http", "format": "yaml", "interval": 86400,
         "behavior": "domain",
-        "url": "https://fastly.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/google.txt",
-        "path": "./ruleset/loyalsoldier/google.yaml"
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/google.list",
+        "path": "./ruleset/google.yaml"
     },
     "AdditionalFilter": {
         "type": "http", "behavior": "classical", "format": "text", "interval": 86400,
@@ -212,13 +197,11 @@ const ruleProviders = {
 const rules = [
     "RULE-SET,ADBlock,广告拦截",
     "RULE-SET,AdditionalFilter,广告拦截",
-    "RULE-SET,TruthSocial,Truth Social",
     "RULE-SET,StaticResources,静态资源",
     "RULE-SET,CDNResources,静态资源",
     "RULE-SET,AdditionalCDNResources,静态资源",
     "RULE-SET,AI,AI",
     "RULE-SET,Crypto,Crypto",
-    "RULE-SET,EHentai,E-Hentai",
     "RULE-SET,TikTok,TikTok",
     "RULE-SET,SteamFix,直连",
     "RULE-SET,Google,谷歌服务",
@@ -761,22 +744,10 @@ function buildProxyGroups({
             "proxies": defaultProxies
         },
         {
-            "name": "E-Hentai",
-            "icon": "https://cdn.jsdelivr.net/gh/powerfullz/override-rules@master/icons/Ehentai.png",
-            "type": "select",
-            "proxies": defaultProxies
-        },
-        {
             "name": "PikPak",
             "icon": "https://cdn.jsdelivr.net/gh/powerfullz/override-rules@master/icons/PikPak.png",
             "type": "select",
             "proxies": defaultProxies
-        },
-        {
-            "name": "Truth Social",
-            "icon": "https://cdn.jsdelivr.net/gh/powerfullz/override-rules@master/icons/TruthSocial.png",
-            "type": "select",
-            "proxies": (hasUS) ? ["美国节点", "选择节点", "手动选择"] : defaultProxies
         },
         {
             "name": "Bahamut",
