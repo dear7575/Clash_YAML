@@ -359,7 +359,6 @@ const ruleProviders = {
 const rules = [
     "RULE-SET,category-ads-all,广告拦截",
     "RULE-SET,category-ai-chat-!cn,AI",
-    "DOMAIN-SUFFIX,linux.do,LinuxDo",
     "RULE-SET,youtube,YouTube",
     "RULE-SET,coursera,选择节点",
     "RULE-SET,edx,选择节点",
@@ -883,13 +882,6 @@ function buildProxyGroups({
             "filter": "^((?!(DIRECTLY|DIRECT|Proxy|Traffic|Expire|Expired|过期|到期|套餐|剩余|流量|官网|超时|失效|Invalid|Test|测速|本地|Local)).)*$",
             "health-check": healthCheckTemplates.standard,
             "icon": "https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Round_Robin.png"
-        },
-        {
-            "name": "LinuxDo",
-            "icon": "https://linux.do/uploads/default/original/4X/c/c/d/ccd8c210609d498cbeb3d5201d4c259348447562.png",
-            "type": "select",
-            "proxies": defaultProxies,
-            "health-check": healthCheckTemplates.standard
         },
         {
             "name": "静态资源",
