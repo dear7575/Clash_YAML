@@ -359,6 +359,7 @@ const ruleProviders = {
 const rules = [
     "RULE-SET,category-ads-all,广告拦截",
     "RULE-SET,category-ai-chat-!cn,AI",
+    "DOMAIN-SUFFIX,linux.do,LinuxDo",
     "RULE-SET,youtube,YouTube",
     "RULE-SET,coursera,选择节点",
     "RULE-SET,edx,选择节点",
@@ -406,7 +407,6 @@ const rules = [
     "RULE-SET,crypto,Crypto",
     "GEOSITE,SPOTIFY,Spotify",
     "GEOSITE,BILIBILI,Bilibili",
-    "DOMAIN-SUFFIX,linux.do,LinuxDo",
     "GEOSITE,GFW,选择节点",
     // "GEOSITE,CN,直连",
     "GEOIP,NETFLIX,Netflix,no-resolve",
