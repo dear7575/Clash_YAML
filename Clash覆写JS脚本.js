@@ -406,7 +406,7 @@ const rules = [
     "RULE-SET,crypto,Crypto",
     "GEOSITE,SPOTIFY,Spotify",
     "GEOSITE,BILIBILI,Bilibili",
-    "GEOSITE,PIKPAK,PikPak",
+    "DOMAIN-SUFFIX,linux.do,LinuxDo",
     "GEOSITE,GFW,选择节点",
     // "GEOSITE,CN,直连",
     "GEOIP,NETFLIX,Netflix,no-resolve",
@@ -885,6 +885,13 @@ function buildProxyGroups({
             "icon": "https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Round_Robin.png"
         },
         {
+            "name": "LinuxDo",
+            "icon": "https://linux.do/uploads/default/original/4X/c/c/d/ccd8c210609d498cbeb3d5201d4c259348447562.png",
+            "type": "select",
+            "proxies": defaultProxies,
+            "health-check": healthCheckTemplates.standard
+        },
+        {
             "name": "静态资源",
             "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Cloudflare.png",
             "type": "select",
@@ -933,12 +940,6 @@ function buildProxyGroups({
         {
             "name": "TikTok",
             "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/TikTok.png",
-            "type": "select",
-            "proxies": defaultProxies
-        },
-        {
-            "name": "PikPak",
-            "icon": "https://cdn.jsdelivr.net/gh/powerfullz/override-rules@master/icons/PikPak.png",
             "type": "select",
             "proxies": defaultProxies
         },
