@@ -1001,7 +1001,23 @@ function buildProxyGroups({
 }
 
 function main(config) {
-    config = {proxies: config.proxies};
+    // 解决节点名称重复导致的错误
+    const seenNames = new Map();
+    const deduplicatedProxies = (config.proxies || []).map(proxy => {
+        let originalName = proxy.name;
+        let newName = originalName;
+        if (seenNames.has(originalName)) {
+            let count = seenNames.get(originalName) + 1;
+            seenNames.set(originalName, count);
+            // 改用 | #2 格式，视觉分隔更明显，且序号从 2 开始更友好
+            newName = `${originalName} | #${count + 1}`;
+        } else {
+            seenNames.set(originalName, 0);
+        }
+        return { ...proxy, name: newName };
+    });
+
+    config = { proxies: deduplicatedProxies };
     // 解析地区与低倍率信息
     const countryInfo = parseCountries(config); // [{ country, count }]
     const lowCost = hasLowCost(config);
