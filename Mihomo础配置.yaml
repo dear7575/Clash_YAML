@@ -2,12 +2,14 @@
 # Mihomo 多订阅 + 防重名 + 负载均衡配置
 # ---------------------------------------------------
 
+# --- 端口设置 ---
 mixed-port: 7890
 allow-lan: true
 mode: rule
 log-level: info
 ipv6: false
 
+# --- 外部控制 ---
 external-controller: :9090
 external-ui: ui
 secret: ""
