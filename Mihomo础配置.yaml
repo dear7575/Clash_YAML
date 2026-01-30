@@ -1,71 +1,89 @@
 # ---------------------------------------------------
-# Mihomo (Clash Meta) 基础配置 + 负载均衡版
+# Mihomo 多订阅 + 防重名 + 负载均衡配置
 # ---------------------------------------------------
 
-# --- 端口设置 ---
 mixed-port: 7890
 allow-lan: true
 mode: rule
 log-level: info
+ipv6: false
 
-# --- 外部控制 ---
 external-controller: :9090
 external-ui: ui
 secret: ""
 
 # ---------------------------------------------------
-# 1. 代理集合 (订阅设置)
+# 1. 代理集合 (多订阅设置)
 # ---------------------------------------------------
 proxy-providers:
-  MySubscription:
+  # === 订阅 1 ===
+  Provider_Main:
     type: http
-    # ⚠️⚠️⚠️ 别忘了把订阅链接填进下面引号里 ⚠️⚠️⚠️
-    url: "" 
+    url: "https://你的第1个订阅链接"
     interval: 3600
-    path: ./proxies/mysub.yaml
+    path: ./proxies/sub1.yaml
     health-check:
       enable: true
       interval: 600
       url: http://www.gstatic.com/generate_204
+    # 【关键逻辑】防重名：给该订阅所有节点名加上前缀
+    override:
+      prefix: "[主订阅] "
+
+  # === 订阅 2 ===
+  Provider_Backup:
+    type: http
+    url: "https://你的第2个订阅链接"
+    interval: 3600
+    path: ./proxies/sub2.yaml
+    health-check:
+      enable: true
+      interval: 600
+      url: http://www.gstatic.com/generate_204
+    # 【关键逻辑】防重名：给该订阅所有节点名加上前缀
+    override:
+      prefix: "[备用] "
 
 # ---------------------------------------------------
-# 2. 策略组 (节点选择 - 已添加负载均衡)
+# 2. 策略组
 # ---------------------------------------------------
 proxy-groups:
-  # [入口组] 你手动选这个组，决定是用“负载均衡”还是“自动优选”
+  # [入口组] 手动选择模式
   - name: "节点选择"
     type: select
     proxies:
-      - "负载均衡"    # <--- 新增：首选走负载均衡
-      - "自动选择"    # 备选：走自动测速
+      - "负载均衡"
+      - "自动选择"
       - DIRECT
+    # 引入所有订阅
     use:
-      - MySubscription # 也可以手动指定某个具体节点
+      - Provider_Main
+      - Provider_Backup
 
-  # [功能组] 负载均衡 (Load Balance)
+  # [功能组] 负载均衡 (混合所有订阅的节点)
   - name: "负载均衡"
     type: load-balance
-    # 策略说明：
-    # consistent-hashing (推荐): 一致性哈希。访问同一网站尽量固定IP，防止账号被登出。
-    # round-robin: 轮询。请求A走节点1，请求B走节点2... 适合多线程下载跑满带宽。
     strategy: consistent-hashing
     url: 'http://www.gstatic.com/generate_204'
     interval: 300
-    tolerance: 150 # 容差：只让延迟差不多的节点参与均衡，防止慢节点拖后腿
+    tolerance: 150
+    # 引入所有订阅，让它们一起参与负载
     use:
-      - MySubscription
+      - Provider_Main
+      - Provider_Backup
 
-  # [功能组] 自动测速 (Url-Test)
+  # [功能组] 自动测速 (从所有订阅中选最快的)
   - name: "自动选择"
     type: url-test
     url: 'http://www.gstatic.com/generate_204'
     interval: 300
     tolerance: 50
     use:
-      - MySubscription
+      - Provider_Main
+      - Provider_Backup
 
 # ---------------------------------------------------
-# 3. 规则 (分流设置)
+# 3. 规则
 # ---------------------------------------------------
 rules:
   - GEOIP,LAN,DIRECT
