@@ -22,11 +22,11 @@ function getBoolArg(value, defaultValue) {
     return parseBool(value);
 }
 
-const loadBalance =  getBoolArg(inArg.loadbalance, true),   // 负载均衡：默认开启（Clash Party 无法传参）
+const loadBalance =  getBoolArg(inArg.loadbalance, false),   // 负载均衡：默认开启（Clash Party 无法传参）
     landing =       getBoolArg(inArg.landing, false),       // 落地节点：默认关闭
     ipv6Enabled =   getBoolArg(inArg.ipv6, false),          // IPv6：默认关闭
     fullConfig =    getBoolArg(inArg.full, false),          // 完整配置：默认关闭
-    keepAliveEnabled = getBoolArg(inArg.keepalive, false),  // TCP keep-alive：默认关闭
+    keepAliveEnabled = getBoolArg(inArg.keepalive, true),  // TCP keep-alive：默认关闭
     fakeIPEnabled = getBoolArg(inArg.fakeip, true);         // FakeIP：默认开启
 
 function parseBool(value) {
