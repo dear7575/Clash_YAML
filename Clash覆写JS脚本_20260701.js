@@ -39,7 +39,7 @@ function parseBool(value) {
 
 function buildBaseLists({landing, lowCost, countryInfo}) {
     const countryGroupNames = countryInfo
-        .filter(item => item.count > 2)
+        .filter(item => item.count > 0)
         .map(item => item.country + "节点");
 
     // defaultSelector (选择节点 组里展示的候选)
@@ -526,129 +526,169 @@ const geoxURL = {
 // 地区元数据
 const countriesMeta = {
     "香港": {
-        pattern: "(?i)香港|港|HK|hk|Hong Kong|HongKong|hongkong|🇭🇰",
+        pattern: "(?i)香港|深港|沪港|港|\\bHK\\b|Hong ?Kong|🇭🇰",
         icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Hong_Kong.png"
     },
     "澳门": {
-        pattern: "(?i)澳门|MO|Macau|🇲🇴",
+        pattern: "(?i)澳门|\\bMO\\b|Macau|Macao|🇲🇴",
         icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Macao.png"
     },
     "台湾": {
-        // 收紧 台 -> 台北|台中|台南，避免误匹配 台州/台山/台东 等大陆城市节点
-        pattern: "(?i)台北|台中|台南|台湾|新北|彰化|TW|Taiwan|🇹🇼",
+        pattern: "(?i)台北|台中|台南|台湾|新北|彰化|\\bTW\\b|Taiwan|🇹🇼",
         icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Taiwan.png"
     },
     "新加坡": {
-        pattern: "(?i)新加坡|坡|狮城|SG|Singapore|🇸🇬",
+        pattern: "(?i)新加坡|狮城|\\bSG\\b|Singapore|🇸🇬",
         icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Singapore.png"
     },
     "日本": {
-        pattern: "(?i)日本|川日|东京|大阪|泉日|埼玉|沪日|深日|JP|Japan|🇯🇵",
+        pattern: "(?i)日本|川日|东京|大阪|泉日|埼玉|沪日|深日|\\bJP\\b|Japan|🇯🇵",
         icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Japan.png"
     },
     "韩国": {
-        pattern: "(?i)KR|Korea|KOR|首尔|韩|韓|🇰🇷",
+        pattern: "(?i)\\bKR\\b|\\bKOR\\b|Korea|首尔|韩|韓|🇰🇷",
         icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Korea.png"
     },
     "美国": {
-        pattern: "(?i)美国|美|US|United States|🇺🇸",
+        pattern: "(?i)美国|美|硅谷|洛杉矶|圣何塞|\\bUS\\b|\\bUSA\\b|United States|America|🇺🇸",
         icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/United_States.png"
     },
     "加拿大": {
-        pattern: "(?i)加拿大|Canada|CA|🇨🇦",
+        pattern: "(?i)加拿大|多伦多|温哥华|\\bCA\\b|\\bCAN\\b|Canada|🇨🇦",
         icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Canada.png"
     },
     "英国": {
-        pattern: "(?i)英国|United Kingdom|UK|伦敦|London|🇬🇧",
+        pattern: "(?i)英国|伦敦|曼城|\\bUK\\b|\\bGB\\b|United Kingdom|🇬🇧",
         icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/United_Kingdom.png"
     },
     "澳大利亚": {
-        pattern: "(?i)澳洲|澳大利亚|AU|Australia|🇦🇺",
+        pattern: "(?i)澳洲|澳大利亚|悉尼|墨尔本|\\bAU\\b|Australia|🇦🇺",
         icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Australia.png"
     },
     "德国": {
-        pattern: "(?i)德国|德|DE|Germany|🇩🇪",
+        pattern: "(?i)德国|德|法兰克福|\\bDE\\b|\\bGER\\b|Germany|🇩🇪",
         icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Germany.png"
     },
     "法国": {
-        pattern: "(?i)法国|法|FR|France|🇫🇷",
+        pattern: "(?i)法国|法|巴黎|\\bFR\\b|France|🇫🇷",
         icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/France.png"
     },
     "俄罗斯": {
-        pattern: "(?i)俄罗斯|俄|RU|Russia|🇷🇺",
+        pattern: "(?i)俄罗斯|俄|莫斯科|\\bRU\\b|\\bRUS\\b|Russia|🇷🇺",
         icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Russia.png"
     },
     "泰国": {
-        pattern: "(?i)泰国|泰|TH|Thailand|🇹🇭",
+        pattern: "(?i)泰国|泰|曼谷|\\bTH\\b|Thailand|🇹🇭",
         icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Thailand.png"
     },
     "印度": {
-        pattern: "(?i)印度|IN|India|🇮🇳",
+        pattern: "(?i)印度|孟买|\\bIN\\b|\\bIND\\b|India|🇮🇳",
         icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/India.png"
     },
     "马来西亚": {
-        pattern: "(?i)马来西亚|马来|MY|Malaysia|🇲🇾",
+        pattern: "(?i)马来西亚|马来|吉隆坡|\\bMY\\b|Malaysia|🇲🇾",
         icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Malaysia.png"
     },
     "荷兰": {
-        pattern: "(?i)荷兰|NL|Netherlands|🇳🇱",
+        pattern: "(?i)荷兰|阿姆斯特丹|\\bNL\\b|Netherlands|🇳🇱",
         icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/flags/nl.svg"
     },
     "瑞士": {
-        pattern: "(?i)瑞士|CH|Switzerland|🇨🇭",
+        pattern: "(?i)瑞士|苏黎世|\\bCH\\b|Switzerland|🇨🇭",
         icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/flags/ch.svg"
     },
     "瑞典": {
-        pattern: "(?i)瑞典|SE|Sweden|🇸🇪",
+        pattern: "(?i)瑞典|斯德哥尔摩|\\bSE\\b|Sweden|🇸🇪",
         icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/flags/se.svg"
     },
     "挪威": {
-        pattern: "(?i)挪威|NO|Norway|🇳🇴",
+        pattern: "(?i)挪威|奥斯陆|\\bNO\\b|Norway|🇳🇴",
         icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/flags/no.svg"
     },
     "芬兰": {
-        pattern: "(?i)芬兰|FI|Finland|🇫🇮",
+        pattern: "(?i)芬兰|赫尔辛基|\\bFI\\b|Finland|🇫🇮",
         icon: "https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Finland.png"
     },
     "丹麦": {
-        pattern: "(?i)丹麦|DK|Denmark|🇩🇰",
+        pattern: "(?i)丹麦|哥本哈根|\\bDK\\b|Denmark|🇩🇰",
         icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev.github.io@main/docs/assets/icons/flags/dk.svg"
     },
     "意大利": {
-        pattern: "(?i)意大利|IT|Italy|🇮🇹",
+        pattern: "(?i)意大利|米兰|罗马|\\bIT\\b|Italy|🇮🇹",
         icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/flags/it.svg"
     },
     "西班牙": {
-        pattern: "(?i)西班牙|ES|Spain|🇪🇸",
+        pattern: "(?i)西班牙|马德里|\\bES\\b|\\bESP\\b|Spain|🇪🇸",
         icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/flags/es.svg"
     },
     "奥地利": {
-        pattern: "(?i)奥地利|AT|Austria|🇦🇹",
+        pattern: "(?i)奥地利|维也纳|\\bAT\\b|Austria|🇦🇹",
         icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/flags/at.svg"
     },
     "比利时": {
-        pattern: "(?i)比利时|BE|Belgium|🇧🇪",
+        pattern: "(?i)比利时|布鲁塞尔|\\bBE\\b|Belgium|🇧🇪",
         icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/flags/be.svg"
     },
     "菲律宾": {
-        pattern: "(?i)菲律宾|PH|Philippines|🇵🇭",
+        pattern: "(?i)菲律宾|马尼拉|\\bPH\\b|Philippines|🇵🇭",
         icon: "https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Philippines.png"
     },
     "阿根廷": {
-        pattern: "(?i)阿根廷|AR|Argentina|🇦🇷",
+        pattern: "(?i)阿根廷|布宜诺斯|\\bAR\\b|Argentina|🇦🇷",
         icon: "https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Argentina.png"
     },
     "印度尼西亚": {
-        pattern: "(?i)印尼|印度尼西亚|ID|Indonesia|🇮🇩",
+        pattern: "(?i)印尼|印度尼西亚|雅加达|\\bID\\b|Indonesia|🇮🇩",
         icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/flags/id.svg"
     },
     "越南": {
-        pattern: "(?i)越南|VN|Vietnam|🇻🇳",
+        pattern: "(?i)越南|河内|胡志明|\\bVN\\b|Vietnam|🇻🇳",
         icon: "https://fastly.jsdelivr.net/gh/clash-verge-rev/clash-verge-rev.github.io@main/docs/assets/icons/flags/vn.svg"
     },
     "巴西": {
-        pattern: "(?i)巴西|BR|Brazil|🇧🇷",
+        pattern: "(?i)巴西|圣保罗|里约|\\bBR\\b|Brazil|🇧🇷",
         icon: "https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Brazil.png"
+    },
+    // ---------- 以下为补增的常见缺失国家 ----------
+    "罗马尼亚": {
+        pattern: "(?i)罗马尼亚|布加勒斯特|\\bRO\\b|Romania|🇷🇴",
+        icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Romania.png"
+    },
+    "波兰": {
+        pattern: "(?i)波兰|华沙|\\bPL\\b|Poland|🇵🇱",
+        icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Poland.png"
+    },
+    "土耳其": {
+        pattern: "(?i)土耳其|伊斯坦布尔|\\bTR\\b|Turkey|🇹🇷",
+        icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Turkey.png"
+    },
+    "爱尔兰": {
+        pattern: "(?i)爱尔兰|都柏林|\\bIE\\b|Ireland|🇮🇪",
+        icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Ireland.png"
+    },
+    "捷克": {
+        pattern: "(?i)捷克|布拉格|\\bCZ\\b|Czech|🇨🇿",
+        icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Czech_Republic.png"
+    },
+    "新西兰": {
+        pattern: "(?i)新西兰|奥克兰|\\bNZ\\b|New Zealand|🇳🇿",
+        icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/New_Zealand.png"
+    },
+    "南非": {
+        pattern: "(?i)南非|开普敦|\\bZA\\b|South Africa|🇿🇦",
+        icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/South_Africa.png"
+    },
+    "墨西哥": {
+        pattern: "(?i)墨西哥|墨西哥城|\\bMX\\b|Mexico|🇲🇽",
+        icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Mexico.png"
+    },
+    "以色列": {
+        pattern: "(?i)以色列|特拉维夫|\\bIL\\b|Israel|🇮🇱",
+        icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Israel.png"
+    },
+    "葡萄牙": {
+        pattern: "(?i)葡萄牙|里斯本|\\bPT\\b|Portugal|🇵🇹",
+        icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Portugal.png"
     }
 };
 
@@ -685,7 +725,17 @@ const countryFlags = {
     "阿根廷": "🇦🇷",
     "印度尼西亚": "🇮🇩",
     "越南": "🇻🇳",
-    "巴西": "🇧🇷"
+    "巴西": "🇧🇷",
+    "罗马尼亚": "🇷🇴",
+    "波兰": "🇵🇱",
+    "土耳其": "🇹🇷",
+    "爱尔兰": "🇮🇪",
+    "捷克": "🇨🇿",
+    "新西兰": "🇳🇿",
+    "南非": "🇿🇦",
+    "墨西哥": "🇲🇽",
+    "以色列": "🇮🇱",
+    "葡萄牙": "🇵🇹"
 };
 
 // ISP / 家宽 / 落地类节点的排除正则。加旗与地区统计共用，保证两处口径一致：
@@ -705,14 +755,16 @@ const existingFlagRegex = /[\u{1F1E6}-\u{1F1FF}]{2}/u;
 /**
  * 为节点名补充国旗图标
  * @param {string} name 原始节点名
- * @returns {string} 处理后的节点名；未匹配到地区、命中 ISP 排除、或已含国旗时原样返回
+ * @returns {string} 处理后的节点名；未匹配到地区或已含国旗时原样返回
+ *
+ * 注意：ISP/家宽/落地节点地理上仍属于某国，也会被加旗。
+ *      ispRegex 仅在 parseCountries 中用于排除"拉入统计"（避免它们撑大地区节点数），
+ *      但不影响加旗。两者口径不一致是设计意图，不是 bug。
  */
 function addFlagToName(name) {
     if (!name) return name;
     // 已包含国旗 emoji，直接跳过，避免出现两个旗帜
     if (existingFlagRegex.test(name)) return name;
-    // ISP/家宽/落地节点不加旗，与 parseCountries 的统计口径保持一致
-    if (ispRegex.test(name)) return name;
     // 按 countriesMeta 顺序匹配，命中第一个地区即添加对应国旗
     for (const { flag, regex } of flagCompiledRegex) {
         if (flag && regex.test(name)) {
