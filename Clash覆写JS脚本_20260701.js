@@ -534,7 +534,8 @@ const countriesMeta = {
         icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Macao.png"
     },
     "台湾": {
-        pattern: "(?i)台|新北|彰化|TW|Taiwan|🇹🇼",
+        // 收紧 台 -> 台北|台中|台南，避免误匹配 台州/台山/台东 等大陆城市节点
+        pattern: "(?i)台北|台中|台南|台湾|新北|彰化|TW|Taiwan|🇹🇼",
         icon: "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Taiwan.png"
     },
     "新加坡": {
@@ -687,7 +688,11 @@ const countryFlags = {
     "巴西": "🇧🇷"
 };
 
-// 预编译地区匹配正则（去掉 (?i) 前缀，统一加 'i' 标志），供国旗匹配复用
+// ISP / 家宽 / 落地类节点的排除正则。加旗与地区统计共用，保证两处口径一致：
+// 这类节点会进入"落地节点"等专用组，不应被当作普通地区节点加旗或计入地区数量。
+const ispRegex = /家宽|家庭|家庭宽带|商宽|商业宽带|星链|Starlink|落地/i;
+
+// 预编译地区匹配正则（去掉 (?i) 前缀，统一加 'i' 标志），供国旗匹配与地区统计复用
 const flagCompiledRegex = Object.entries(countriesMeta).map(([country, meta]) => ({
     country,
     flag: countryFlags[country],
@@ -700,12 +705,14 @@ const existingFlagRegex = /[\u{1F1E6}-\u{1F1FF}]{2}/u;
 /**
  * 为节点名补充国旗图标
  * @param {string} name 原始节点名
- * @returns {string} 处理后的节点名；未匹配到地区或已含国旗时原样返回
+ * @returns {string} 处理后的节点名；未匹配到地区、命中 ISP 排除、或已含国旗时原样返回
  */
 function addFlagToName(name) {
     if (!name) return name;
     // 已包含国旗 emoji，直接跳过，避免出现两个旗帜
     if (existingFlagRegex.test(name)) return name;
+    // ISP/家宽/落地节点不加旗，与 parseCountries 的统计口径保持一致
+    if (ispRegex.test(name)) return name;
     // 按 countriesMeta 顺序匹配，命中第一个地区即添加对应国旗
     for (const { flag, regex } of flagCompiledRegex) {
         if (flag && regex.test(name)) {
@@ -793,19 +800,11 @@ function hasLowCost(config) {
 
 function parseCountries(config) {
     const proxies = config.proxies || [];
-    const ispRegex = /家宽|家庭|家庭宽带|商宽|商业宽带|星链|Starlink|落地/i;   // 需要排除的关键字
 
     // 用来累计各国节点数
     const countryCounts = Object.create(null);
 
-    // 构建地区正则表达式，去掉 (?i) 前缀
-    const compiledRegex = {};
-    for (const [country, meta] of Object.entries(countriesMeta)) {
-        compiledRegex[country] = new RegExp(
-            meta.pattern.replace(/^\(\?i\)/, ''),
-            'i'
-        );
-    }
+    // 复用顶层预编译的 ispRegex / flagCompiledRegex，避免重复构建正则（DRY）
 
     // 逐个节点进行匹配与统计
     for (const proxy of proxies) {
@@ -815,7 +814,7 @@ function parseCountries(config) {
         if (ispRegex.test(name)) continue;
 
         // 找到第一个匹配到的地区就计数并终止本轮
-        for (const [country, regex] of Object.entries(compiledRegex)) {
+        for (const { country, regex } of flagCompiledRegex) {
             if (regex.test(name)) {
                 countryCounts[country] = (countryCounts[country] || 0) + 1;
                 break;    // 避免一个节点同时累计到多个地区
@@ -851,16 +850,14 @@ function buildCountryProxyGroups(countryList) {
                 "filter": pattern,
                 "exclude-filter": landing ? "(?i)家宽|家庭|家庭宽带|商宽|商业宽带|星链|Starlink|落地|0\.[0-5]|低倍率|省流|大流量|实验性" : "0\.[0-5]|低倍率|省流|大流量|实验性",
                 "type": (loadBalance) ? "load-balance" : "url-test",
+                // 健康检查对 load-balance 与 url-test 都是必需的：load-balance 依赖它分配流量，
+                // 缺失时混合订阅（节点数多）易触发组内节点不可用/丢失。此处两种类型统一补齐。
+                "url": "https://cp.cloudflare.com/generate_204",
+                "interval": 60,
+                "tolerance": 20,
+                "lazy": false,
+                "health-check": healthCheckTemplates.fast
             };
-
-            if (!loadBalance) {
-                Object.assign(groupConfig, {
-                    "url": "https://cp.cloudflare.com/generate_204",
-                    "interval": 60,
-                    "tolerance": 20,
-                    "lazy": false
-                });
-            }
 
             countryProxyGroups.push(groupConfig);
         }
