@@ -37,34 +37,43 @@ function parseBool(value) {
     return false;
 }
 
-function buildBaseLists({landing, lowCost, countryInfo}) {
+function buildBaseLists({landing, highCost, lowCost, countryInfo}) {
     const countryGroupNames = countryInfo
         .filter(item => item.count > 0)
         .map(item => item.country + "节点");
 
     // defaultSelector (选择节点 组里展示的候选)
-    // 故障转移, 落地节点(可选), 各地区节点, 低倍率节点(可选), 手动选择, DIRECT
+    // 故障转移, 落地节点(可选), 高倍率节点(可选), 各地区节点, 低倍率节点(可选), 手动选择, DIRECT
     const selector = ["延迟自动", "故障转移"]; // 把 fallback 放在最前
     if (landing) selector.push("落地节点");
+    if (highCost) selector.push("高倍率节点");
     selector.push(...countryGroupNames);
     if (lowCost) selector.push("低倍率节点");
     selector.push("手动选择", "DIRECT");
 
     // defaultProxies (各分类策略引用)
-    // 选择节点, 各地区节点, 低倍率节点(可选), 手动选择, 直连
-    const defaultProxies = ["选择节点", "延迟自动", ...countryGroupNames];
+    // 选择节点, 延迟自动, 高倍率节点(可选), 各地区节点, 低倍率节点(可选), 手动选择
+    const defaultProxies = ["选择节点", "延迟自动"];
+    if (highCost) defaultProxies.push("高倍率节点");
+    defaultProxies.push(...countryGroupNames);
     if (lowCost) defaultProxies.push("低倍率节点");
     defaultProxies.push("手动选择");
 
     // direct 优先的列表
     const defaultProxiesDirect = ["直连", ...countryGroupNames, "选择节点", "手动选择"]; // 直连优先
+    // 高倍率放在地区之后、选择节点之前
+    if (highCost) {
+        defaultProxiesDirect.splice(1 + countryGroupNames.length, 0, "高倍率节点");
+    }
     if (lowCost) {
-        // 在直连策略里低倍率次于地区、早于选择节点
-        defaultProxiesDirect.splice(1 + countryGroupNames.length, 0, "低倍率节点");
+        // 低倍率次于高倍率、早于选择节点
+        const insertPos = 1 + countryGroupNames.length + (highCost ? 1 : 0);
+        defaultProxiesDirect.splice(insertPos, 0, "低倍率节点");
     }
 
     const defaultFallback = [];
     if (landing) defaultFallback.push("落地节点");
+    if (highCost) defaultFallback.push("高倍率节点");
     defaultFallback.push(...countryGroupNames);
     if (lowCost) defaultFallback.push("低倍率节点");
     // 可选是否加入 手动选择 / DIRECT；按容灾语义加入。
@@ -850,6 +859,18 @@ function hasLowCost(config) {
     return false;
 }
 
+function hasHighCost(config) {
+    // 检查是否有高倍率节点（1.0+ 倍率 / 高速 / 旗舰 / 专线等）
+    const proxies = config["proxies"];
+    const highCostRegex = /\b[1-9]\.[0-9]\b|高倍率|高速|旗舰|专线|VIP|Premium/i;
+    for (const proxy of proxies) {
+        if (highCostRegex.test(proxy.name)) {
+            return true;
+        }
+    }
+    return false;
+}
+
 function parseCountries(config) {
     const proxies = config.proxies || [];
 
@@ -921,6 +942,7 @@ function buildCountryProxyGroups(countryList) {
 function buildProxyGroups({
                               countryList,
                               countryProxyGroups,
+                              highCost,
                               lowCost,
                               defaultProxies,
                               defaultProxiesDirect,
@@ -1115,6 +1137,15 @@ function buildProxyGroups({
                 "REJECT", "直连"
             ]
         },
+        (highCost) ? {
+            "name": "高倍率节点",
+            "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Rocket.png",
+            "type": "url-test",
+            "url": "https://cp.cloudflare.com/generate_204",
+            "include-all": true,
+            "filter": "(?i)\\b[1-9]\\.[0-9]\\b|高倍率|高速|旗舰|专线|VIP|Premium",
+            "health-check": healthCheckTemplates.standard
+        } : null,
         (lowCost) ? {
             "name": "低倍率节点",
             "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Lab.png",
@@ -1149,9 +1180,10 @@ function main(config) {
     });
 
     config = { ...config, proxies: deduplicatedProxies };
-    // 解析地区与低倍率信息
+    // 解析地区与高/低倍率信息
     const countryInfo = parseCountries(config); // [{ country, count }]
     const lowCost = hasLowCost(config);
+    const highCost = hasHighCost(config);
 
     // 构建基础数组
     const {
@@ -1160,7 +1192,7 @@ function main(config) {
         defaultSelector,
         defaultFallback,
         countryGroupNames: targetCountryList
-    } = buildBaseLists({landing, lowCost, countryInfo});
+    } = buildBaseLists({landing, highCost, lowCost, countryInfo});
 
     // 为地区构建对应的 url-test / load-balance 组
     const countryProxyGroups = buildCountryProxyGroups(targetCountryList.map(n => n.replace(/节点$/, '')));
@@ -1169,6 +1201,7 @@ function main(config) {
     const proxyGroups = buildProxyGroups({
         countryList: targetCountryList.map(n => n.replace(/节点$/, '')),
         countryProxyGroups,
+        highCost,
         lowCost,
         defaultProxies,
         defaultProxiesDirect,
