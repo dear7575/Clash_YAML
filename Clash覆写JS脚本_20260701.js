@@ -22,11 +22,11 @@ function getBoolArg(value, defaultValue) {
     return parseBool(value);
 }
 
-const loadBalance =  getBoolArg(inArg.loadbalance, true),   // 负载均衡：默认开启（Clash Party 无法传参）
+const loadBalance =  getBoolArg(inArg.loadbalance, false),   // 负载均衡：默认开启（Clash Party 无法传参）
     landing =       getBoolArg(inArg.landing, false),       // 落地节点：默认关闭
     ipv6Enabled =   getBoolArg(inArg.ipv6, false),          // IPv6：默认关闭
     fullConfig =    getBoolArg(inArg.full, false),          // 完整配置：默认关闭
-    keepAliveEnabled = getBoolArg(inArg.keepalive, false),  // TCP keep-alive：默认关闭
+    keepAliveEnabled = getBoolArg(inArg.keepalive, true),  // TCP keep-alive：默认关闭
     fakeIPEnabled = getBoolArg(inArg.fakeip, true);         // FakeIP：默认开启
 
 function parseBool(value) {
@@ -747,9 +747,44 @@ const countryFlags = {
     "葡萄牙": "🇵🇹"
 };
 
+// ISP / 家宽 / 落地类节点的关键字。加旗与地区统计、地区分组共用，保证口径一致。
+const landingKeywordSource = "家宽|家庭|家庭宽带|商宽|商业宽带|星链|Starlink|落地";
+const landingFilter = `(?i)${landingKeywordSource}`;
+
+// 低倍率 / 高倍率的文本关键字与倍率值规则。
+// 社区里常见写法并不统一，通常会出现 0.5x / x0.5 / 2X / X20 / 0.5倍率 / 倍率2 这几类。
+const lowCostKeywordSource = "低倍率|省流|大流量|实验性";
+const highCostKeywordSource = "高倍率|高速|旗舰|专线|VIP|Premium";
+const multiplierNumberSource = "\\d+(?:\\.\\d+)?";
+const lowMultiplierValueSource = "0(?:\\.\\d+)?";
+const highMultiplierValueSource = "(?:1\\.(?:0*[1-9]\\d*)|(?:[2-9]\\d*|1\\d+)(?:\\.\\d+)?)";
+
+/**
+ * 构建倍率匹配片段
+ * @param {string} valueSource 倍率数值对应的正则片段
+ * @returns {string} 可复用的倍率匹配规则
+ */
+function buildMultiplierSource(valueSource) {
+    return [
+        `(?:^|[^\\dA-Za-z])(?:[x×]\\s*${valueSource})(?:$|[^\\dA-Za-z])`,
+        `(?:^|[^\\dA-Za-z])(?:${valueSource}\\s*[x×])(?:$|[^\\dA-Za-z])`,
+        `倍率\\s*[:：]?\\s*${valueSource}`,
+        `(?:^|[^\\dA-Za-z])(?:${valueSource}\\s*倍率)(?:$|[^\\dA-Za-z])`
+    ].join("|");
+}
+
+const lowMultiplierSource = buildMultiplierSource(lowMultiplierValueSource);
+const highMultiplierSource = buildMultiplierSource(highMultiplierValueSource);
+const lowCostMatchSource = `${lowMultiplierSource}|${lowCostKeywordSource}`;
+const highCostMatchSource = `${highMultiplierSource}|${highCostKeywordSource}`;
+
 // ISP / 家宽 / 落地类节点的排除正则。加旗与地区统计共用，保证两处口径一致：
 // 这类节点会进入"落地节点"等专用组，不应被当作普通地区节点加旗或计入地区数量。
-const ispRegex = /家宽|家庭|家庭宽带|商宽|商业宽带|星链|Starlink|落地/i;
+const ispRegex = new RegExp(landingKeywordSource, "i");
+const lowCostRegex = new RegExp(lowCostMatchSource, "i");
+const highCostRegex = new RegExp(highCostMatchSource, "i");
+const lowCostExcludeFilter = `(?i)${lowCostMatchSource}`;
+const highCostIncludeFilter = `(?i)${highCostMatchSource}`;
 
 // 预编译地区匹配正则（去掉 (?i) 前缀，统一加 'i' 标志），供国旗匹配与地区统计复用
 const flagCompiledRegex = Object.entries(countriesMeta).map(([country, meta]) => ({
@@ -760,6 +795,32 @@ const flagCompiledRegex = Object.entries(countriesMeta).map(([country, meta]) =>
 
 // 匹配任意国旗 emoji 的正则（用于判断节点名是否已带国旗，避免重复添加）
 const existingFlagRegex = /[\u{1F1E6}-\u{1F1FF}]{2}/u;
+
+/**
+ * 从节点名中提取倍率数值
+ * @param {string} name 节点名称
+ * @returns {number|null} 提取出的倍率；未识别时返回 null
+ */
+function extractMultiplier(name) {
+    if (!name) return null;
+
+    const patterns = [
+        new RegExp(`(?:^|[^\\dA-Za-z])[x×]\\s*(${multiplierNumberSource})(?:$|[^\\dA-Za-z])`, "i"),
+        new RegExp(`(?:^|[^\\dA-Za-z])(${multiplierNumberSource})\\s*[x×](?:$|[^\\dA-Za-z])`, "i"),
+        new RegExp(`倍率\\s*[:：]?\\s*(${multiplierNumberSource})`, "i"),
+        new RegExp(`(?:^|[^\\dA-Za-z])(${multiplierNumberSource})\\s*倍率(?:$|[^\\dA-Za-z])`, "i")
+    ];
+
+    for (const pattern of patterns) {
+        const match = name.match(pattern);
+        if (match) {
+            const value = Number(match[1]);
+            if (!Number.isNaN(value)) return value;
+        }
+    }
+
+    return null;
+}
 
 /**
  * 为节点名补充国旗图标
@@ -848,25 +909,31 @@ const groupBaseOption = {
 };
 
 function hasLowCost(config) {
-    // 检查是否有低倍率节点
-    const proxies = config["proxies"];
-    const lowCostRegex = new RegExp(/0\.[0-5]|低倍率|省流|大流量|实验性/, 'i');
+    // 先按显式倍率数值判断；未标倍率时再回退到关键字匹配。
+    const proxies = config["proxies"] || [];
     for (const proxy of proxies) {
-        if (lowCostRegex.test(proxy.name)) {
-            return true;
+        const name = proxy.name || "";
+        const multiplier = extractMultiplier(name);
+        if (multiplier !== null) {
+            if (multiplier < 1) return true;
+            continue;
         }
+        if (lowCostRegex.test(name)) return true;
     }
     return false;
 }
 
 function hasHighCost(config) {
-    // 检查是否有高倍率节点（1.0+ 倍率 / 高速 / 旗舰 / 专线等）
-    const proxies = config["proxies"];
-    const highCostRegex = /\b[1-9]\.[0-9]\b|高倍率|高速|旗舰|专线|VIP|Premium/i;
+    // 标准倍率 1x 不计入高倍率，仅识别大于 1 的倍率与高成本关键字。
+    const proxies = config["proxies"] || [];
     for (const proxy of proxies) {
-        if (highCostRegex.test(proxy.name)) {
-            return true;
+        const name = proxy.name || "";
+        const multiplier = extractMultiplier(name);
+        if (multiplier !== null) {
+            if (multiplier > 1) return true;
+            continue;
         }
+        if (highCostRegex.test(name)) return true;
     }
     return false;
 }
@@ -921,7 +988,7 @@ function buildCountryProxyGroups(countryList) {
                 "icon": countriesMeta[country].icon,
                 "include-all": true,
                 "filter": pattern,
-                "exclude-filter": landing ? "(?i)家宽|家庭|家庭宽带|商宽|商业宽带|星链|Starlink|落地|0\.[0-5]|低倍率|省流|大流量|实验性" : "0\.[0-5]|低倍率|省流|大流量|实验性",
+                "exclude-filter": landing ? `${landingFilter}|${lowCostMatchSource}` : lowCostExcludeFilter,
                 "type": (loadBalance) ? "load-balance" : "url-test",
                 // 健康检查对 load-balance 与 url-test 都是必需的：load-balance 依赖它分配流量，
                 // 缺失时混合订阅（节点数多）易触发组内节点不可用/丢失。此处两种类型统一补齐。
@@ -991,7 +1058,7 @@ function buildProxyGroups({
             "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Area.png",
             "type": "select",
             "include-all": true,
-            "exclude-filter": "(?i)家宽|家庭|家庭宽带|商宽|商业宽带|星链|Starlink|落地",
+            "exclude-filter": landingFilter,
             "proxies": frontProxySelector
         } : null,
         (landing) ? {
@@ -999,7 +1066,7 @@ function buildProxyGroups({
             "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Airport.png",
             "type": "select",
             "include-all": true,
-            "filter": "(?i)家宽|家庭|家庭宽带|商宽|商业宽带|星链|Starlink|落地",
+            "filter": landingFilter,
         } : null,
         {
             "name": "故障转移",
@@ -1143,7 +1210,7 @@ function buildProxyGroups({
             "type": "url-test",
             "url": "https://cp.cloudflare.com/generate_204",
             "include-all": true,
-            "filter": "(?i)\\b[1-9]\\.[0-9]\\b|高倍率|高速|旗舰|专线|VIP|Premium",
+            "filter": highCostIncludeFilter,
             "health-check": healthCheckTemplates.standard
         } : null,
         (lowCost) ? {
@@ -1152,7 +1219,7 @@ function buildProxyGroups({
             "type": "url-test",
             "url": "https://cp.cloudflare.com/generate_204",
             "include-all": true,
-            "filter": "(?i)0\.[0-5]|低倍率|省流|大流量|实验性",
+            "filter": lowCostExcludeFilter,
             "health-check": healthCheckTemplates.standard
         } : null,
         ...countryProxyGroups
