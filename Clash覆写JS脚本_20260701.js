@@ -22,11 +22,11 @@ function getBoolArg(value, defaultValue) {
     return parseBool(value);
 }
 
-const loadBalance =  getBoolArg(inArg.loadbalance, false),   // 负载均衡：默认开启（Clash Party 无法传参）
+const loadBalance =  getBoolArg(inArg.loadbalance, true),   // 负载均衡：默认开启（Clash Party 无法传参）
     landing =       getBoolArg(inArg.landing, false),       // 落地节点：默认关闭
     ipv6Enabled =   getBoolArg(inArg.ipv6, false),          // IPv6：默认关闭
     fullConfig =    getBoolArg(inArg.full, false),          // 完整配置：默认关闭
-    keepAliveEnabled = getBoolArg(inArg.keepalive, true),  // TCP keep-alive：默认关闭
+    keepAliveEnabled = getBoolArg(inArg.keepalive, false),  // TCP keep-alive：默认关闭
     fakeIPEnabled = getBoolArg(inArg.fakeip, true);         // FakeIP：默认开启
 
 function parseBool(value) {
@@ -303,6 +303,68 @@ const ruleProviders = {
         "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/geolocation-!cn.mrs",
         "path": "./ruleset/geolocation-!cn.mrs"
     },
+    // -------- MetaCubeX 扩展服务规则（域名 / MRS） --------
+    "openai-mrs": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/openai.mrs",
+        "path": "./ruleset/openai-mrs.mrs"
+    },
+    "onedrive-mrs": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/onedrive.mrs",
+        "path": "./ruleset/onedrive-mrs.mrs"
+    },
+    "biliintl-mrs": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/biliintl.mrs",
+        "path": "./ruleset/biliintl-mrs.mrs"
+    },
+    "category-dev": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/category-dev.mrs",
+        "path": "./ruleset/category-dev.mrs"
+    },
+    // -------- blackmatrix7 细分类规则（classical / YAML） --------
+    "applemusic": {
+        "type": "http", "behavior": "classical", "format": "yaml", "interval": 86400,
+        "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/AppleMusic/AppleMusic.yaml",
+        "path": "./ruleset/applemusic.yaml"
+    },
+    "discord": {
+        "type": "http", "behavior": "classical", "format": "yaml", "interval": 86400,
+        "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Discord/Discord.yaml",
+        "path": "./ruleset/discord.yaml"
+    },
+    "whatsapp": {
+        "type": "http", "behavior": "classical", "format": "yaml", "interval": 86400,
+        "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Whatsapp/Whatsapp.yaml",
+        "path": "./ruleset/whatsapp.yaml"
+    },
+    "wikipedia": {
+        "type": "http", "behavior": "classical", "format": "yaml", "interval": 86400,
+        "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Wikipedia/Wikipedia.yaml",
+        "path": "./ruleset/wikipedia.yaml"
+    },
+    "reddit": {
+        "type": "http", "behavior": "classical", "format": "yaml", "interval": 86400,
+        "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Reddit/Reddit.yaml",
+        "path": "./ruleset/reddit.yaml"
+    },
+    "speedtest": {
+        "type": "http", "behavior": "classical", "format": "yaml", "interval": 86400,
+        "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Speedtest/Speedtest.yaml",
+        "path": "./ruleset/speedtest.yaml"
+    },
+    "cloudflare": {
+        "type": "http", "behavior": "classical", "format": "yaml", "interval": 86400,
+        "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Cloudflare/Cloudflare.yaml",
+        "path": "./ruleset/cloudflare.yaml"
+    },
+    "mail": {
+        "type": "http", "behavior": "classical", "format": "yaml", "interval": 86400,
+        "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Mail/Mail.yaml",
+        "path": "./ruleset/mail.yaml"
+    },
     "StaticResources": {
         "type": "http", "behavior": "domain", "format": "text", "interval": 86400,
         "url": "https://ruleset.skk.moe/Clash/domainset/cdn.txt",
@@ -376,61 +438,96 @@ const ruleProviders = {
 }
 
 const rules = [
+    // -------- 广告与隐私拦截 --------
     "RULE-SET,category-ads-all,广告拦截",
+    "RULE-SET,reject,广告拦截",
+
+    // -------- AI 与开发服务 --------
+    "RULE-SET,openai-mrs,AI",
     "RULE-SET,category-ai-chat-!cn,AI",
-    "RULE-SET,youtube,YouTube",
-    "RULE-SET,coursera,选择节点",
-    "RULE-SET,edx,选择节点",
-    "RULE-SET,udemy,选择节点",
-    "RULE-SET,khanacademy,选择节点",
-    "RULE-SET,category-scholar-!cn,选择节点",
-    "RULE-SET,google-mrs,谷歌服务",
-    "RULE-SET,private-mrs,直连",
-    "RULE-SET,geolocation-cn,直连",
-    "RULE-SET,cn-mrs,直连",
+    "RULE-SET,category-dev,开发服务",
+    "RULE-SET,github,开发服务",
+    "RULE-SET,gitlab,开发服务",
+    "RULE-SET,aws,开发服务",
+    "RULE-SET,azure,开发服务",
+    "RULE-SET,digitalocean,开发服务",
+    "RULE-SET,heroku,开发服务",
+    "RULE-SET,dropbox,开发服务",
+
+    // -------- 通讯与社交 --------
     "RULE-SET,telegram-mrs,Telegram",
-    "RULE-SET,github,选择节点",
-    "RULE-SET,gitlab,选择节点",
-    "RULE-SET,microsoft-mrs,微软服务",
-    "RULE-SET,apple-mrs,苹果服务",
-    "RULE-SET,facebook,选择节点",
-    "RULE-SET,instagram,选择节点",
-    "RULE-SET,twitter,选择节点",
+    "RULE-SET,discord,社交通讯",
+    "RULE-SET,whatsapp,社交通讯",
+    "RULE-SET,facebook,社交通讯",
+    "RULE-SET,instagram,社交通讯",
+    "RULE-SET,twitter,社交通讯",
+    "RULE-SET,linkedin,社交通讯",
+    "RULE-SET,reddit,社交通讯",
+    "RULE-SET,wikipedia,选择节点",
+
+    // -------- 内容与流媒体 --------
+    "RULE-SET,youtube,YouTube",
     "RULE-SET,tiktok-mrs,TikTok",
-    "RULE-SET,linkedin,选择节点",
     "RULE-SET,netflix-mrs,Netflix",
     "RULE-SET,hulu,选择节点",
     "RULE-SET,disney,选择节点",
     "RULE-SET,hbo,选择节点",
     "RULE-SET,amazon,选择节点",
     "RULE-SET,bahamut-mrs,Bahamut",
+    "RULE-SET,biliintl-mrs,Bilibili",
+    "GEOSITE,SPOTIFY,Spotify",
+    "GEOSITE,BILIBILI,Bilibili",
+
+    // -------- 教育、游戏与专项服务 --------
+    "RULE-SET,coursera,选择节点",
+    "RULE-SET,edx,选择节点",
+    "RULE-SET,udemy,选择节点",
+    "RULE-SET,khanacademy,选择节点",
+    "RULE-SET,category-scholar-!cn,选择节点",
     "RULE-SET,steam,选择节点",
     "RULE-SET,epicgames,选择节点",
     "RULE-SET,ea,选择节点",
     "RULE-SET,ubisoft,选择节点",
     "RULE-SET,blizzard,选择节点",
+    "RULE-SET,crypto,Crypto",
+    "RULE-SET,speedtest,测速服务",
+
+    // -------- 系统、云盘与生态服务 --------
+    "RULE-SET,google-mrs,谷歌服务",
+    "RULE-SET,microsoft-mrs,微软服务",
+    "RULE-SET,onedrive-mrs,微软服务",
+    "RULE-SET,apple-mrs,苹果服务",
+    "RULE-SET,applemusic,苹果服务",
+    "RULE-SET,icloud,苹果服务",
+    "RULE-SET,apple,苹果服务",
+    "RULE-SET,mail,邮件服务",
+    "RULE-SET,cloudflare,静态资源",
+    "RULE-SET,StaticResources,静态资源",
+    "RULE-SET,CDNResources,静态资源",
+
+    // -------- 金融与支付 --------
     "RULE-SET,paypal,选择节点",
     "RULE-SET,visa,选择节点",
     "RULE-SET,mastercard,选择节点",
     "RULE-SET,stripe,选择节点",
     "RULE-SET,wise,选择节点",
-    "RULE-SET,aws,选择节点",
-    "RULE-SET,azure,选择节点",
-    "RULE-SET,digitalocean,选择节点",
-    "RULE-SET,heroku,选择节点",
-    "RULE-SET,dropbox,选择节点",
+
+    // -------- 基础直连 / 代理兜底 --------
+    "RULE-SET,applications,直连",
+    "RULE-SET,private-mrs,直连",
+    "RULE-SET,private,直连",
+    "RULE-SET,geolocation-cn,直连",
+    "RULE-SET,cn-mrs,直连",
+    "RULE-SET,direct,直连",
+    "RULE-SET,proxy,选择节点",
+    "RULE-SET,gfw,选择节点",
+    "RULE-SET,tld-not-cn,选择节点",
     "RULE-SET,geolocation-!cn,选择节点",
-    "RULE-SET,StaticResources,静态资源",
-    "RULE-SET,CDNResources,静态资源",
-    "RULE-SET,crypto,Crypto",
-    "GEOSITE,SPOTIFY,Spotify",
-    "GEOSITE,BILIBILI,Bilibili",
     "GEOSITE,GFW,选择节点",
-    // "GEOSITE,CN,直连",
     "GEOIP,NETFLIX,Netflix,no-resolve",
     "GEOIP,TELEGRAM,Telegram,no-resolve",
-    // "GEOIP,CN,直连",
-    // "GEOIP,PRIVATE,直连",
+    "RULE-SET,cncidr,直连,no-resolve",
+    "RULE-SET,lancidr,直连,no-resolve",
     "DST-PORT,22,SSH(22端口)",
     "MATCH,选择节点"
 ];
@@ -1100,6 +1197,7 @@ function buildProxyGroups({
             "health-check": healthCheckTemplates.standard,
             "icon": "https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Round_Robin.png"
         },
+        // -------- 通用服务分组 --------
         {
             "name": "静态资源",
             "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Cloudflare.png",
@@ -1113,6 +1211,32 @@ function buildProxyGroups({
             "proxies": defaultProxies,
             "health-check": healthCheckTemplates.ai
         },
+        {
+            "name": "开发服务",
+            "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Proxy.png",
+            "type": "select",
+            "proxies": defaultProxies
+        },
+        {
+            "name": "社交通讯",
+            "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Telegram.png",
+            "type": "select",
+            "proxies": defaultProxies
+        },
+        {
+            "name": "邮件服务",
+            "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Available.png",
+            "type": "select",
+            "proxies": defaultProxies
+        },
+        {
+            "name": "测速服务",
+            "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Auto.png",
+            "type": "select",
+            "proxies": defaultProxiesDirect
+        },
+
+        // -------- 通讯与媒体分组 --------
         {
             "name": "Telegram",
             "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Telegram.png",
