@@ -22,10 +22,10 @@ function getBoolArg(value, defaultValue) {
     return parseBool(value);
 }
 
-const loadBalance =  getBoolArg(inArg.loadbalance, false),   // 负载均衡：默认开启（Clash Party 无法传参）
-    landing =       getBoolArg(inArg.landing, false),       // 落地节点：默认关闭
-    ipv6Enabled =   getBoolArg(inArg.ipv6, false),          // IPv6：默认关闭
-    fullConfig =    getBoolArg(inArg.full, false),          // 完整配置：默认关闭
+const loadBalance = getBoolArg(inArg.loadbalance, false),   // 负载均衡：默认开启（Clash Party 无法传参）
+    landing = getBoolArg(inArg.landing, false),       // 落地节点：默认关闭
+    ipv6Enabled = getBoolArg(inArg.ipv6, false),          // IPv6：默认关闭
+    fullConfig = getBoolArg(inArg.full, false),          // 完整配置：默认关闭
     keepAliveEnabled = getBoolArg(inArg.keepalive, true),  // TCP keep-alive：默认关闭
     fakeIPEnabled = getBoolArg(inArg.fakeip, true);         // FakeIP：默认开启
 
@@ -883,11 +883,30 @@ const highCostRegex = new RegExp(highCostMatchSource, "i");
 const lowCostExcludeFilter = `(?i)${lowCostMatchSource}`;
 const highCostIncludeFilter = `(?i)${highCostMatchSource}`;
 
+// 未命中国家/地区规则的普通节点统一进入兜底组，避免只因命名不规范而缺少分组入口。
+const unclassifiedCountryName = "其他";
+const unclassifiedCountryIcon = "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Proxy.png";
+
+/**
+ * 移除地区规则中的内联忽略大小写标记，方便 JS RegExp 与 Clash 过滤规则复用。
+ * @param {string} pattern 地区匹配规则
+ * @returns {string} 去除内联标记后的匹配规则
+ */
+function normalizeCountryPattern(pattern) {
+    return pattern.replace(/^\(\?i\)/, '');
+}
+
+// 合并全部地区规则，用作"其他节点"的反向排除条件，避免已归类节点重复进入兜底组。
+const countryMatchSource = Object.values(countriesMeta)
+    .map(meta => normalizeCountryPattern(meta.pattern))
+    .join("|");
+const unclassifiedNodeExcludeFilter = `(?i)${countryMatchSource}|${landingKeywordSource}|${lowCostMatchSource}`;
+
 // 预编译地区匹配正则（去掉 (?i) 前缀，统一加 'i' 标志），供国旗匹配与地区统计复用
 const flagCompiledRegex = Object.entries(countriesMeta).map(([country, meta]) => ({
     country,
     flag: countryFlags[country],
-    regex: new RegExp(meta.pattern.replace(/^\(\?i\)/, ''), 'i')
+    regex: new RegExp(normalizeCountryPattern(meta.pattern), 'i')
 }));
 
 // 匹配任意国旗 emoji 的正则（用于判断节点名是否已带国旗，避免重复添加）
@@ -933,7 +952,7 @@ function addFlagToName(name) {
     // 已包含国旗 emoji，直接跳过，避免出现两个旗帜
     if (existingFlagRegex.test(name)) return name;
     // 按 countriesMeta 顺序匹配，命中第一个地区即添加对应国旗
-    for (const { flag, regex } of flagCompiledRegex) {
+    for (const {flag, regex} of flagCompiledRegex) {
         if (flag && regex.test(name)) {
             return `${flag} ${name}`;
         }
@@ -994,6 +1013,7 @@ const healthCheckTemplates = {
 // 仅排除明确的"信息类/非代理"节点（流量、到期、官网等），不再排除 Traffic 之外可能误伤正常节点的宽泛词。
 // 三个自动组共用同一规则，保证行为一致（DRY）。
 const autoTestFilter = "^((?!(DIRECTLY|DIRECT|过期|到期|剩余|套餐|流量|官网|测速|订阅|重置|网址|失效|Expire|Expired|Invalid)).)*$";
+const autoTestRegex = new RegExp(autoTestFilter, "i");
 
 // 代理组通用配置
 const groupBaseOption = {
@@ -1040,22 +1060,29 @@ function parseCountries(config) {
 
     // 用来累计各国节点数
     const countryCounts = Object.create(null);
-
-    // 复用顶层预编译的 ispRegex / flagCompiledRegex，避免重复构建正则（DRY）
+    let unclassifiedCount = 0;
 
     // 逐个节点进行匹配与统计
     for (const proxy of proxies) {
         const name = proxy.name || '';
+        if (!name) continue;
 
         // 过滤掉不想统计的 ISP 节点
         if (ispRegex.test(name)) continue;
 
         // 找到第一个匹配到的地区就计数并终止本轮
-        for (const { country, regex } of flagCompiledRegex) {
+        let matchedCountry = false;
+        for (const {country, regex} of flagCompiledRegex) {
             if (regex.test(name)) {
                 countryCounts[country] = (countryCounts[country] || 0) + 1;
+                matchedCountry = true;
                 break;    // 避免一个节点同时累计到多个地区
             }
+        }
+
+        // 未命中国家/地区且属于普通代理节点时，计入"其他节点"兜底组。
+        if (!matchedCountry && autoTestRegex.test(name) && !lowCostRegex.test(name)) {
+            unclassifiedCount++;
         }
     }
 
@@ -1063,6 +1090,9 @@ function parseCountries(config) {
     const result = [];
     for (const [country, count] of Object.entries(countryCounts)) {
         result.push({country, count});
+    }
+    if (unclassifiedCount > 0) {
+        result.push({country: unclassifiedCountryName, count: unclassifiedCount});
     }
 
     return result;   // [{ country: 'Japan', count: 12 }, ...]
@@ -1075,6 +1105,26 @@ function buildCountryProxyGroups(countryList) {
 
     // 为实际存在的地区创建节点组
     for (const country of countryList) {
+        if (country === unclassifiedCountryName) {
+            const groupConfig = {
+                "name": `${unclassifiedCountryName}节点`,
+                "icon": unclassifiedCountryIcon,
+                "include-all": true,
+                "filter": autoTestFilter,
+                "exclude-filter": unclassifiedNodeExcludeFilter,
+                "type": (loadBalance) ? "load-balance" : "url-test",
+                // 兜底组只承接未命中国家/地区规则的普通节点，不与地区、落地、低倍率组重复。
+                "url": "https://cp.cloudflare.com/generate_204",
+                "interval": 60,
+                "tolerance": 20,
+                "lazy": false,
+                "health-check": healthCheckTemplates.fast
+            };
+
+            countryProxyGroups.push(groupConfig);
+            continue;
+        }
+
         // 确保地区名称在预设的地区配置中存在
         if (countriesMeta[country]) {
             const groupName = `${country}节点`;
@@ -1367,10 +1417,10 @@ function main(config) {
         } else {
             seenNames.set(flaggedName, 0);
         }
-        return { ...proxy, name: newName };
+        return {...proxy, name: newName};
     });
 
-    config = { ...config, proxies: deduplicatedProxies };
+    config = {...config, proxies: deduplicatedProxies};
     // 解析地区与高/低倍率信息
     const countryInfo = parseCountries(config); // [{ country, count }]
     const lowCost = hasLowCost(config);
