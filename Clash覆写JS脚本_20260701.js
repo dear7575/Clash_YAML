@@ -1010,9 +1010,11 @@ const healthCheckTemplates = {
 };
 
 // 自动测速/负载均衡组的统一节点过滤正则。
-// 仅排除明确的"信息类/非代理"节点（流量、到期、官网等），不再排除 Traffic 之外可能误伤正常节点的宽泛词。
+// 仅排除明确的"信息类/非代理"节点；流量/剩余/套餐只在名称开头时排除，避免误伤真实线路名。
 // 三个自动组共用同一规则，保证行为一致（DRY）。
-const autoTestFilter = "^((?!(DIRECTLY|DIRECT|过期|到期|剩余|套餐|流量|官网|测速|订阅|重置|网址|失效|Expire|Expired|Invalid)).)*$";
+const nonProxyKeywordSource = "DIRECTLY|DIRECT|过期|到期|官网|测速|订阅|重置|网址|失效|Expire|Expired|Invalid";
+const leadingTrafficInfoSource = "^\\s*(?:剩余|套餐|流量|Traffic|Remaining)";
+const autoTestFilter = `^((?!(${nonProxyKeywordSource}|${leadingTrafficInfoSource})).)*$`;
 const autoTestRegex = new RegExp(autoTestFilter, "i");
 
 // 代理组通用配置
