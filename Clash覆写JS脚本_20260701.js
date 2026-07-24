@@ -795,6 +795,15 @@ const countriesMeta = {
     "葡萄牙": {
         pattern: "(?i)葡萄牙|里斯本|\\bPT\\b|Portugal|🇵🇹",
         icon: "https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Portugal.png"
+    },
+    // 区域标签放在具体国家之后，避免节点同时带国家与区域时被宽泛规则提前命中。
+    "欧洲": {
+        pattern: "(?i)欧洲|欧盟|\\bEU\\b|Europe|🇪🇺",
+        icon: "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f1ea-1f1fa.svg"
+    },
+    "联合国": {
+        pattern: "(?i)联合国|\\bUN\\b|United Nations|🇺🇳",
+        icon: "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f1fa-1f1f3.svg"
     }
 };
 
@@ -841,7 +850,9 @@ const countryFlags = {
     "南非": "🇿🇦",
     "墨西哥": "🇲🇽",
     "以色列": "🇮🇱",
-    "葡萄牙": "🇵🇹"
+    "葡萄牙": "🇵🇹",
+    "欧洲": "🇪🇺",
+    "联合国": "🇺🇳"
 };
 
 // ISP / 家宽 / 落地类节点的关键字。加旗与地区统计、地区分组共用，保证口径一致。
