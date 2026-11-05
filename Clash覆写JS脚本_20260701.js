@@ -555,7 +555,6 @@ const snifferConfig = {
 };
 
 // Clash Party 启用客户端 DNS 覆写时，客户端设置可覆盖此处的 DNS 配置。
-const dnsProxyGroup = "DNS 出站";
 const bootstrapDns = ["tls://223.5.5.5"];
 
 const baseDnsConfig = {
@@ -565,8 +564,8 @@ const baseDnsConfig = {
     "enhanced-mode": "redir-host",
     "default-nameserver": bootstrapDns,
     "nameserver": [
-        `https://1.1.1.1/dns-query#${dnsProxyGroup}`,
-        `https://8.8.8.8/dns-query#${dnsProxyGroup}`
+        "https://1.1.1.1/dns-query#选择节点",
+        "https://8.8.8.8/dns-query#选择节点"
     ],
     // 节点域名需要先于代理连接解析，使用独立的加密上游。
     "proxy-server-nameserver": bootstrapDns
@@ -1429,14 +1428,6 @@ function main(config) {
         defaultFallback
     });
     const globalProxies = proxyGroups.map(item => item.name);
-    proxyGroups.push({
-        "name": dnsProxyGroup,
-        "type": "url-test",
-        "include-all": true,
-        "exclude-type": "Direct|Pass|Compatible|Reject",
-        "empty-fallback": "REJECT",
-        "url": "https://cp.cloudflare.com/generate_204"
-    });
 
     proxyGroups.push(
         {
