@@ -383,15 +383,15 @@ const rules = [
     "RULE-SET,reject,广告拦截",
 
     // -------- 券商服务 --------
-    "RULE-SET,ibkr-domains,盈透",
-    "RULE-SET,schwab-domains,嘉信",
+    "RULE-SET,ibkr-domains,IBKR",
+    "RULE-SET,schwab-domains,Schwab",
 
     // -------- AI --------
     "RULE-SET,openai-mrs,AI",
     "RULE-SET,category-ai-chat-!cn,AI",
 
     // -------- 通讯与社交 --------
-    "RULE-SET,telegram-mrs,Telegram",
+    "RULE-SET,telegram-mrs,社交通讯",
     "RULE-SET,discord,社交通讯",
     "RULE-SET,whatsapp,社交通讯",
     "RULE-SET,facebook,社交通讯",
@@ -451,7 +451,7 @@ const rules = [
     "RULE-SET,tld-not-cn,选择节点",
     "RULE-SET,geolocation-!cn,选择节点",
     "GEOSITE,GFW,选择节点",
-    "GEOIP,TELEGRAM,Telegram,no-resolve",
+    "GEOIP,TELEGRAM,社交通讯,no-resolve",
     "RULE-SET,cncidr,直连,no-resolve",
     "RULE-SET,lancidr,直连,no-resolve",
     "DST-PORT,22,SSH(22端口)",
@@ -1160,12 +1160,14 @@ function buildProxyGroups({
             "health-check": healthCheckTemplates.ai
         },
         {
-            "name": "盈透",
+            "name": "IBKR",
+            "icon": "https://www.interactivebrokers.com/images/web/favicons/home-screen-icon-128x128.png",
             "type": "select",
             "proxies": [...defaultProxies, "直连"]
         },
         {
-            "name": "嘉信",
+            "name": "Schwab",
+            "icon": "https://www.schwab.com/themes/custom/sch_beacon_retail/favicons/icon_32x32.png",
             "type": "select",
             "proxies": [...defaultProxies, "直连"]
         },
@@ -1177,12 +1179,6 @@ function buildProxyGroups({
         },
 
         // -------- 通讯与媒体分组 --------
-        {
-            "name": "Telegram",
-            "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Telegram.png",
-            "type": "select",
-            "proxies": defaultProxies
-        },
         {
             "name": "YouTube",
             "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/YouTube.png",
