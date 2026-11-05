@@ -71,6 +71,52 @@ function buildBaseLists({landing, highCost, lowCost, countryInfo}) {
 }
 
 const ruleProviders = {
+    "overseas-ai-extra": {
+        "type": "inline",
+        "behavior": "domain",
+        "payload": [
+            // AI 编程与应用构建
+            "+.lovable.dev",
+            "+.bolt.new",
+            "+.v0.app",
+            "+.v0.dev",
+            "+.replit.com",
+            "+.augmentcode.com",
+            "+.ampcode.com",
+            "+.kilo.ai",
+            "+.kilocode.ai",
+            "+.aider.chat",
+            // AI 搜索与助手
+            "+.character.ai",
+            "+.pi.ai",
+            "+.you.com",
+            "+.genspark.ai",
+            // 图像、视频、音乐与演示
+            "+.runwayml.com",
+            "+.ideogram.ai",
+            "+.leonardo.ai",
+            "+.lumalabs.ai",
+            "+.pika.art",
+            "+.suno.com",
+            "+.udio.com",
+            "+.krea.ai",
+            "+.heygen.com",
+            "+.synthesia.io",
+            "+.gamma.app",
+            "firefly.adobe.com",
+            "firefly-api.adobe.io",
+            // 模型 API 与生成结果
+            "+.together.ai",
+            "api.together.xyz",
+            "+.fireworks.ai",
+            "+.replicate.com",
+            "+.replicate.delivery",
+            "+.fal.ai",
+            "+.fal.run",
+            "+.fal.media",
+            "+.stability.ai",
+        ]
+    },
     "bahamut-mrs": {
         "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
         "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/bahamut.mrs",
@@ -451,6 +497,7 @@ const rules = [
     // -------- AI --------
     "RULE-SET,openai-mrs,AI服务",
     "RULE-SET,category-ai-chat-!cn,AI服务",
+    "RULE-SET,overseas-ai-extra,AI服务",
 
     // -------- 开发服务 --------
     "RULE-SET,category-dev,开发服务",
