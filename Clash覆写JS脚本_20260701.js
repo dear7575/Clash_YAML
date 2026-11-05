@@ -71,6 +71,11 @@ function buildBaseLists({landing, highCost, lowCost, countryInfo}) {
 }
 
 const ruleProviders = {
+    "bahamut-mrs": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/bahamut.mrs",
+        "path": "./ruleset/bahamut-mrs.mrs"
+    },
     "tiktok-mrs": {
         "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
         "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/tiktok.mrs",
@@ -440,12 +445,12 @@ const rules = [
     "RULE-SET,reject,广告拦截",
 
     // -------- 券商服务 --------
-    "RULE-SET,ibkr-domains,IBKR",
-    "RULE-SET,schwab-domains,Schwab",
+    "RULE-SET,ibkr-domains,盈透服务",
+    "RULE-SET,schwab-domains,嘉信服务",
 
     // -------- AI --------
-    "RULE-SET,openai-mrs,AI",
-    "RULE-SET,category-ai-chat-!cn,AI",
+    "RULE-SET,openai-mrs,AI服务",
+    "RULE-SET,category-ai-chat-!cn,AI服务",
 
     // -------- 开发服务 --------
     "RULE-SET,category-dev,开发服务",
@@ -473,9 +478,10 @@ const rules = [
     "RULE-SET,tiktok-mrs,媒体服务",
     "RULE-SET,netflix-mrs,媒体服务",
     "GEOSITE,SPOTIFY,媒体服务",
-    "RULE-SET,hulu,选择节点",
-    "RULE-SET,disney,选择节点",
-    "RULE-SET,hbo,选择节点",
+    "RULE-SET,hulu,媒体服务",
+    "RULE-SET,disney,媒体服务",
+    "RULE-SET,hbo,媒体服务",
+    "RULE-SET,bahamut-mrs,媒体服务",
     "RULE-SET,amazon,选择节点",
 
     // -------- 教育、游戏与专项服务 --------
@@ -1224,20 +1230,20 @@ function buildProxyGroups({
             "proxies": defaultProxies,
         },
         {
-            "name": "AI",
+            "name": "AI服务",
             "icon": "https://cdn.jsdelivr.net/gh/powerfullz/override-rules@master/icons/chatgpt.png",
             "type": "select",
             "proxies": defaultProxies,
             "health-check": healthCheckTemplates.ai
         },
         {
-            "name": "IBKR",
+            "name": "盈透服务",
             "icon": "https://www.interactivebrokers.com/images/web/favicons/home-screen-icon-128x128.png",
             "type": "select",
             "proxies": [...defaultProxies, "直连"]
         },
         {
-            "name": "Schwab",
+            "name": "嘉信服务",
             "icon": "https://www.schwab.com/themes/custom/sch_beacon_retail/favicons/icon_32x32.png",
             "type": "select",
             "proxies": [...defaultProxies, "直连"]
