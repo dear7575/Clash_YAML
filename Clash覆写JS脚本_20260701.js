@@ -71,6 +71,53 @@ function buildBaseLists({landing, highCost, lowCost, countryInfo}) {
 }
 
 const ruleProviders = {
+    "gitlab": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/gitlab.mrs",
+        "path": "./ruleset/gitlab.mrs"
+    },
+    "aws": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/aws.mrs",
+        "path": "./ruleset/aws.mrs"
+    },
+    "azure": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/azure.mrs",
+        "path": "./ruleset/azure.mrs"
+    },
+    "digitalocean": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/digitalocean.mrs",
+        "path": "./ruleset/digitalocean.mrs"
+    },
+    "heroku": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/heroku.mrs",
+        "path": "./ruleset/heroku.mrs"
+    },
+    "dropbox": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/dropbox.mrs",
+        "path": "./ruleset/dropbox.mrs"
+    },
+    "category-dev": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/category-dev.mrs",
+        "path": "./ruleset/category-dev.mrs"
+    },
+    "github-domains": {
+        "type": "inline",
+        "behavior": "domain",
+        "payload": [
+            "+.github.com",
+            "+.githubusercontent.com",
+            "+.githubassets.com",
+            "+.github.io",
+            "+.github.dev",
+            "+.ghcr.io"
+        ]
+    },
     "ibkr-domains": {
         "type": "inline",
         "behavior": "domain",
@@ -389,6 +436,16 @@ const rules = [
     // -------- AI --------
     "RULE-SET,openai-mrs,AI",
     "RULE-SET,category-ai-chat-!cn,AI",
+
+    // -------- 开发服务 --------
+    "RULE-SET,category-dev,开发服务",
+    "RULE-SET,github-domains,开发服务",
+    "RULE-SET,gitlab,开发服务",
+    "RULE-SET,aws,开发服务",
+    "RULE-SET,azure,开发服务",
+    "RULE-SET,digitalocean,开发服务",
+    "RULE-SET,heroku,开发服务",
+    "RULE-SET,dropbox,开发服务",
 
     // -------- 通讯与社交 --------
     "RULE-SET,telegram-mrs,社交通讯",
@@ -1170,6 +1227,12 @@ function buildProxyGroups({
             "icon": "https://www.schwab.com/themes/custom/sch_beacon_retail/favicons/icon_32x32.png",
             "type": "select",
             "proxies": [...defaultProxies, "直连"]
+        },
+        {
+            "name": "开发服务",
+            "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Proxy.png",
+            "type": "select",
+            "proxies": defaultProxies
         },
         {
             "name": "社交通讯",
