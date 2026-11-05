@@ -59,18 +59,6 @@ function buildBaseLists({landing, highCost, lowCost, countryInfo}) {
     if (lowCost) defaultProxies.push("低倍率节点");
     defaultProxies.push("手动选择");
 
-    // direct 优先的列表
-    const defaultProxiesDirect = ["直连", ...countryGroupNames, "选择节点", "手动选择"]; // 直连优先
-    // 高倍率放在地区之后、选择节点之前
-    if (highCost) {
-        defaultProxiesDirect.splice(1 + countryGroupNames.length, 0, "高倍率节点");
-    }
-    if (lowCost) {
-        // 低倍率次于高倍率、早于选择节点
-        const insertPos = 1 + countryGroupNames.length + (highCost ? 1 : 0);
-        defaultProxiesDirect.splice(insertPos, 0, "低倍率节点");
-    }
-
     const defaultFallback = [];
     if (landing) defaultFallback.push("落地节点");
     if (highCost) defaultFallback.push("高倍率节点");
@@ -79,7 +67,7 @@ function buildBaseLists({landing, highCost, lowCost, countryInfo}) {
     // 可选是否加入 手动选择 / DIRECT；按容灾语义加入。
     defaultFallback.push("手动选择", "DIRECT");
 
-    return {defaultProxies, defaultProxiesDirect, defaultSelector: selector, defaultFallback, countryGroupNames};
+    return {defaultProxies, defaultSelector: selector, defaultFallback, countryGroupNames};
 }
 
 const ruleProviders = {
@@ -445,14 +433,14 @@ const rules = [
     // -------- AI 与开发服务 --------
     "RULE-SET,openai-mrs,AI",
     "RULE-SET,category-ai-chat-!cn,AI",
-    "RULE-SET,category-dev,开发服务",
-    "RULE-SET,github,开发服务",
-    "RULE-SET,gitlab,开发服务",
-    "RULE-SET,aws,开发服务",
-    "RULE-SET,azure,开发服务",
-    "RULE-SET,digitalocean,开发服务",
-    "RULE-SET,heroku,开发服务",
-    "RULE-SET,dropbox,开发服务",
+    "RULE-SET,category-dev,选择节点",
+    "RULE-SET,github,选择节点",
+    "RULE-SET,gitlab,选择节点",
+    "RULE-SET,aws,选择节点",
+    "RULE-SET,azure,选择节点",
+    "RULE-SET,digitalocean,选择节点",
+    "RULE-SET,heroku,选择节点",
+    "RULE-SET,dropbox,选择节点",
 
     // -------- 通讯与社交 --------
     "RULE-SET,telegram-mrs,Telegram",
@@ -467,16 +455,16 @@ const rules = [
 
     // -------- 内容与流媒体 --------
     "RULE-SET,youtube,YouTube",
-    "RULE-SET,tiktok-mrs,TikTok",
-    "RULE-SET,netflix-mrs,Netflix",
+    "RULE-SET,tiktok-mrs,选择节点",
+    "RULE-SET,netflix-mrs,选择节点",
     "RULE-SET,hulu,选择节点",
     "RULE-SET,disney,选择节点",
     "RULE-SET,hbo,选择节点",
     "RULE-SET,amazon,选择节点",
-    "RULE-SET,bahamut-mrs,Bahamut",
-    "RULE-SET,biliintl-mrs,Bilibili",
-    "GEOSITE,SPOTIFY,Spotify",
-    "GEOSITE,BILIBILI,Bilibili",
+    "RULE-SET,bahamut-mrs,选择节点",
+    "RULE-SET,biliintl-mrs,直连",
+    "GEOSITE,SPOTIFY,选择节点",
+    "GEOSITE,BILIBILI,直连",
 
     // -------- 教育、游戏与专项服务 --------
     "RULE-SET,coursera,选择节点",
@@ -489,8 +477,8 @@ const rules = [
     "RULE-SET,ea,选择节点",
     "RULE-SET,ubisoft,选择节点",
     "RULE-SET,blizzard,选择节点",
-    "RULE-SET,crypto,Crypto",
-    "RULE-SET,speedtest,测速服务",
+    "RULE-SET,crypto,选择节点",
+    "RULE-SET,speedtest,直连",
 
     // -------- 系统、云盘与生态服务 --------
     "RULE-SET,google-mrs,谷歌服务",
@@ -500,7 +488,7 @@ const rules = [
     "RULE-SET,applemusic,苹果服务",
     "RULE-SET,icloud,苹果服务",
     "RULE-SET,apple,苹果服务",
-    "RULE-SET,mail,邮件服务",
+    "RULE-SET,mail,选择节点",
     "RULE-SET,cloudflare,静态资源",
     "RULE-SET,StaticResources,静态资源",
     "RULE-SET,CDNResources,静态资源",
@@ -524,7 +512,7 @@ const rules = [
     "RULE-SET,tld-not-cn,选择节点",
     "RULE-SET,geolocation-!cn,选择节点",
     "GEOSITE,GFW,选择节点",
-    "GEOIP,NETFLIX,Netflix,no-resolve",
+    "GEOIP,NETFLIX,选择节点,no-resolve",
     "GEOIP,TELEGRAM,Telegram,no-resolve",
     "RULE-SET,cncidr,直连,no-resolve",
     "RULE-SET,lancidr,直连,no-resolve",
@@ -1132,19 +1120,13 @@ function buildCountryProxyGroups(countryList) {
 }
 
 function buildProxyGroups({
-                              countryList,
                               countryProxyGroups,
                               highCost,
                               lowCost,
                               defaultProxies,
-                              defaultProxiesDirect,
                               defaultSelector,
                               defaultFallback
                           }) {
-    // 查看是否有特定地区的节点
-    const hasTW = countryList.includes("台湾");
-    const hasHK = countryList.includes("香港");
-    const hasUS = countryList.includes("美国");
     // 排除落地节点、选择节点和故障转移以避免死循环
     const frontProxySelector = [
         ...defaultSelector.filter(name => name !== "落地节点" && name !== "故障转移")
@@ -1240,28 +1222,10 @@ function buildProxyGroups({
             "health-check": healthCheckTemplates.ai
         },
         {
-            "name": "开发服务",
-            "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Proxy.png",
-            "type": "select",
-            "proxies": defaultProxies
-        },
-        {
             "name": "社交通讯",
             "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Telegram.png",
             "type": "select",
             "proxies": defaultProxies
-        },
-        {
-            "name": "邮件服务",
-            "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Available.png",
-            "type": "select",
-            "proxies": defaultProxies
-        },
-        {
-            "name": "测速服务",
-            "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Auto.png",
-            "type": "select",
-            "proxies": defaultProxiesDirect
         },
 
         // -------- 通讯与媒体分组 --------
@@ -1277,44 +1241,6 @@ function buildProxyGroups({
             "type": "select",
             "proxies": defaultProxies,
             "health-check": healthCheckTemplates.media
-        },
-        {
-            "name": "Bilibili",
-            "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/bilibili.png",
-            "type": "select",
-            "proxies": (hasTW && hasHK) ? ["直连", "台湾节点", "香港节点"] : defaultProxiesDirect
-        },
-        {
-            "name": "Netflix",
-            "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Netflix.png",
-            "type": "select",
-            "proxies": defaultProxies,
-            "health-check": healthCheckTemplates.media
-        },
-        {
-            "name": "Spotify",
-            "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Spotify.png",
-            "type": "select",
-            "proxies": defaultProxies,
-            "health-check": healthCheckTemplates.media
-        },
-        {
-            "name": "TikTok",
-            "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/TikTok.png",
-            "type": "select",
-            "proxies": defaultProxies
-        },
-        {
-            "name": "Bahamut",
-            "icon": "https://cdn.jsdmirror.com/gh/Koolson/Qure@master/IconSet/Color/Bahamut.png",
-            "type": "select",
-            "proxies": (hasTW) ? ["台湾节点", "选择节点", "手动选择", "直连"] : defaultProxies
-        },
-        {
-            "name": "Crypto",
-            "icon": "https://cdn.jsdmirror.com/gh/Koolson/Qure@master/IconSet/Color/Cryptocurrency_3.png",
-            "type": "select",
-            "proxies": defaultProxies
         },
         {
             "name": "SSH(22端口)",
@@ -1407,7 +1333,6 @@ function main(config) {
     // 构建基础数组
     const {
         defaultProxies,
-        defaultProxiesDirect,
         defaultSelector,
         defaultFallback,
         countryGroupNames: targetCountryList
@@ -1418,12 +1343,10 @@ function main(config) {
 
     // 生成代理组
     const proxyGroups = buildProxyGroups({
-        countryList: targetCountryList.map(n => n.replace(/节点$/, '')),
         countryProxyGroups,
         highCost,
         lowCost,
         defaultProxies,
-        defaultProxiesDirect,
         defaultSelector,
         defaultFallback
     });
