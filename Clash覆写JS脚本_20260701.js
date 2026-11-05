@@ -911,7 +911,7 @@ const highCostIncludeFilter = `(?i)${highCostMatchSource}`;
 
 // 未命中国家/地区规则的普通节点统一进入兜底组，避免只因命名不规范而缺少分组入口。
 const unclassifiedCountryName = "其他";
-const unclassifiedCountryIcon = "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Proxy.png";
+const unclassifiedCountryIcon = "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Nfcloud.png";
 
 /**
  * 移除地区规则中的内联忽略大小写标记，方便 JS RegExp 与 Clash 过滤规则复用。
@@ -1211,7 +1211,7 @@ function buildProxyGroups({
         },
         {
             "name": "选择节点",
-            "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Proxy.png",
+            "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Ingress.png",
             "type": "select",
             "proxies": defaultSelector,
             "health-check": healthCheckTemplates.standard
