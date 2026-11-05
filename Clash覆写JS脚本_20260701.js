@@ -71,6 +71,33 @@ function buildBaseLists({landing, highCost, lowCost, countryInfo}) {
 }
 
 const ruleProviders = {
+    "ibkr-domains": {
+        "type": "inline",
+        "behavior": "domain",
+        "payload": [
+            "+.interactivebrokers.com",
+            "+.ibkr.com",
+            "+.ibkr.co.uk",
+            "+.interactivebrokers.com.hk",
+            "+.interactivebrokers.com.sg",
+            "+.interactivebrokers.co.uk",
+            "+.interactivebrokers.ie",
+            "+.interactivebrokers.ca",
+            "+.interactivebrokers.com.au",
+            "+.interactivebrokers.co.jp",
+            "+.interactivebrokers.co.in",
+            "+.ibllc.com",
+            "+.ibllc.com.cn"
+        ]
+    },
+    "schwab-domains": {
+        "type": "inline",
+        "behavior": "domain",
+        "payload": [
+            "+.schwab.com",
+            "+.thinkorswim.com"
+        ]
+    },
     "category-ads-all": {
         "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
         "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/category-ads-all.mrs",
@@ -111,16 +138,6 @@ const ruleProviders = {
         "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/telegram.mrs",
         "path": "./ruleset/telegram-mrs.mrs"
     },
-    "github": {
-        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
-        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/github.mrs",
-        "path": "./ruleset/github.mrs"
-    },
-    "gitlab": {
-        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
-        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/gitlab.mrs",
-        "path": "./ruleset/gitlab.mrs"
-    },
     "microsoft-mrs": {
         "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
         "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/microsoft.mrs",
@@ -146,20 +163,10 @@ const ruleProviders = {
         "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/twitter.mrs",
         "path": "./ruleset/twitter.mrs"
     },
-    "tiktok-mrs": {
-        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
-        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/tiktok.mrs",
-        "path": "./ruleset/tiktok-mrs.mrs"
-    },
     "linkedin": {
         "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
         "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/linkedin.mrs",
         "path": "./ruleset/linkedin.mrs"
-    },
-    "netflix-mrs": {
-        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
-        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/netflix.mrs",
-        "path": "./ruleset/netflix-mrs.mrs"
     },
     "hulu": {
         "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
@@ -180,11 +187,6 @@ const ruleProviders = {
         "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
         "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/amazon.mrs",
         "path": "./ruleset/amazon.mrs"
-    },
-    "bahamut-mrs": {
-        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
-        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/bahamut.mrs",
-        "path": "./ruleset/bahamut-mrs.mrs"
     },
     "steam": {
         "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
@@ -261,31 +263,6 @@ const ruleProviders = {
         "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/wise.mrs",
         "path": "./ruleset/wise.mrs"
     },
-    "aws": {
-        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
-        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/aws.mrs",
-        "path": "./ruleset/aws.mrs"
-    },
-    "azure": {
-        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
-        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/azure.mrs",
-        "path": "./ruleset/azure.mrs"
-    },
-    "digitalocean": {
-        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
-        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/digitalocean.mrs",
-        "path": "./ruleset/digitalocean.mrs"
-    },
-    "heroku": {
-        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
-        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/heroku.mrs",
-        "path": "./ruleset/heroku.mrs"
-    },
-    "dropbox": {
-        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
-        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/dropbox.mrs",
-        "path": "./ruleset/dropbox.mrs"
-    },
     "geolocation-!cn": {
         "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
         "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/geolocation-!cn.mrs",
@@ -301,16 +278,6 @@ const ruleProviders = {
         "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
         "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/onedrive.mrs",
         "path": "./ruleset/onedrive-mrs.mrs"
-    },
-    "biliintl-mrs": {
-        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
-        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/biliintl.mrs",
-        "path": "./ruleset/biliintl-mrs.mrs"
-    },
-    "category-dev": {
-        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
-        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/category-dev.mrs",
-        "path": "./ruleset/category-dev.mrs"
     },
     // -------- blackmatrix7 细分类规则（classical / YAML） --------
     "applemusic": {
@@ -338,20 +305,10 @@ const ruleProviders = {
         "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Reddit/Reddit.yaml",
         "path": "./ruleset/reddit.yaml"
     },
-    "speedtest": {
-        "type": "http", "behavior": "classical", "format": "yaml", "interval": 86400,
-        "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Speedtest/Speedtest.yaml",
-        "path": "./ruleset/speedtest.yaml"
-    },
     "cloudflare": {
         "type": "http", "behavior": "classical", "format": "yaml", "interval": 86400,
         "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Cloudflare/Cloudflare.yaml",
         "path": "./ruleset/cloudflare.yaml"
-    },
-    "mail": {
-        "type": "http", "behavior": "classical", "format": "yaml", "interval": 86400,
-        "url": "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Mail/Mail.yaml",
-        "path": "./ruleset/mail.yaml"
     },
     "StaticResources": {
         "type": "http", "behavior": "domain", "format": "text", "interval": 86400,
@@ -362,11 +319,6 @@ const ruleProviders = {
         "type": "http", "behavior": "classical", "format": "text", "interval": 86400,
         "url": "https://ruleset.skk.moe/Clash/non_ip/cdn.txt",
         "path": "./ruleset/CDNResources.txt"
-    },
-    "crypto": {
-        "type": "http", "behavior": "classical", "format": "text", "interval": 86400,
-        "url": "https://cdn.jsdelivr.net/gh/powerfullz/override-rules@master/ruleset/Crypto.list",
-        "path": "./ruleset/Crypto.list"
     },
     "reject": {
         "type": "http", "behavior": "domain", "format": "yaml", "interval": 86400,
@@ -430,17 +382,13 @@ const rules = [
     "RULE-SET,category-ads-all,广告拦截",
     "RULE-SET,reject,广告拦截",
 
-    // -------- AI 与开发服务 --------
+    // -------- 券商服务 --------
+    "RULE-SET,ibkr-domains,盈透",
+    "RULE-SET,schwab-domains,嘉信",
+
+    // -------- AI --------
     "RULE-SET,openai-mrs,AI",
     "RULE-SET,category-ai-chat-!cn,AI",
-    "RULE-SET,category-dev,选择节点",
-    "RULE-SET,github,选择节点",
-    "RULE-SET,gitlab,选择节点",
-    "RULE-SET,aws,选择节点",
-    "RULE-SET,azure,选择节点",
-    "RULE-SET,digitalocean,选择节点",
-    "RULE-SET,heroku,选择节点",
-    "RULE-SET,dropbox,选择节点",
 
     // -------- 通讯与社交 --------
     "RULE-SET,telegram-mrs,Telegram",
@@ -455,16 +403,10 @@ const rules = [
 
     // -------- 内容与流媒体 --------
     "RULE-SET,youtube,YouTube",
-    "RULE-SET,tiktok-mrs,选择节点",
-    "RULE-SET,netflix-mrs,选择节点",
     "RULE-SET,hulu,选择节点",
     "RULE-SET,disney,选择节点",
     "RULE-SET,hbo,选择节点",
     "RULE-SET,amazon,选择节点",
-    "RULE-SET,bahamut-mrs,选择节点",
-    "RULE-SET,biliintl-mrs,直连",
-    "GEOSITE,SPOTIFY,选择节点",
-    "GEOSITE,BILIBILI,直连",
 
     // -------- 教育、游戏与专项服务 --------
     "RULE-SET,coursera,选择节点",
@@ -477,8 +419,6 @@ const rules = [
     "RULE-SET,ea,选择节点",
     "RULE-SET,ubisoft,选择节点",
     "RULE-SET,blizzard,选择节点",
-    "RULE-SET,crypto,选择节点",
-    "RULE-SET,speedtest,直连",
 
     // -------- 系统、云盘与生态服务 --------
     "RULE-SET,google-mrs,谷歌服务",
@@ -488,7 +428,6 @@ const rules = [
     "RULE-SET,applemusic,苹果服务",
     "RULE-SET,icloud,苹果服务",
     "RULE-SET,apple,苹果服务",
-    "RULE-SET,mail,选择节点",
     "RULE-SET,cloudflare,静态资源",
     "RULE-SET,StaticResources,静态资源",
     "RULE-SET,CDNResources,静态资源",
@@ -512,7 +451,6 @@ const rules = [
     "RULE-SET,tld-not-cn,选择节点",
     "RULE-SET,geolocation-!cn,选择节点",
     "GEOSITE,GFW,选择节点",
-    "GEOIP,NETFLIX,选择节点,no-resolve",
     "GEOIP,TELEGRAM,Telegram,no-resolve",
     "RULE-SET,cncidr,直连,no-resolve",
     "RULE-SET,lancidr,直连,no-resolve",
@@ -1220,6 +1158,16 @@ function buildProxyGroups({
             "type": "select",
             "proxies": defaultProxies,
             "health-check": healthCheckTemplates.ai
+        },
+        {
+            "name": "盈透",
+            "type": "select",
+            "proxies": [...defaultProxies, "直连"]
+        },
+        {
+            "name": "嘉信",
+            "type": "select",
+            "proxies": [...defaultProxies, "直连"]
         },
         {
             "name": "社交通讯",
