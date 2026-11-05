@@ -71,6 +71,16 @@ function buildBaseLists({landing, highCost, lowCost, countryInfo}) {
 }
 
 const ruleProviders = {
+    "tiktok-mrs": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/tiktok.mrs",
+        "path": "./ruleset/tiktok-mrs.mrs"
+    },
+    "netflix-mrs": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/netflix.mrs",
+        "path": "./ruleset/netflix-mrs.mrs"
+    },
     "gitlab": {
         "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
         "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/gitlab.mrs",
@@ -459,7 +469,10 @@ const rules = [
     "RULE-SET,wikipedia,选择节点",
 
     // -------- 内容与流媒体 --------
-    "RULE-SET,youtube,YouTube",
+    "RULE-SET,youtube,媒体服务",
+    "RULE-SET,tiktok-mrs,媒体服务",
+    "RULE-SET,netflix-mrs,媒体服务",
+    "GEOSITE,SPOTIFY,媒体服务",
     "RULE-SET,hulu,选择节点",
     "RULE-SET,disney,选择节点",
     "RULE-SET,hbo,选择节点",
@@ -509,6 +522,7 @@ const rules = [
     "RULE-SET,geolocation-!cn,选择节点",
     "GEOSITE,GFW,选择节点",
     "GEOIP,TELEGRAM,社交通讯,no-resolve",
+    "GEOIP,NETFLIX,媒体服务,no-resolve",
     "RULE-SET,cncidr,直连,no-resolve",
     "RULE-SET,lancidr,直连,no-resolve",
     "DST-PORT,22,SSH(22端口)",
@@ -1243,8 +1257,8 @@ function buildProxyGroups({
 
         // -------- 通讯与媒体分组 --------
         {
-            "name": "YouTube",
-            "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/YouTube.png",
+            "name": "媒体服务",
+            "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/ForeignMedia.png",
             "type": "select",
             "proxies": defaultProxies,
             "health-check": healthCheckTemplates.media
