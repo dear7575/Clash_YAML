@@ -554,39 +554,26 @@ const snifferConfig = {
     ]
 };
 
-const dnsConfig = {
+// Clash Party 启用客户端 DNS 覆写时，客户端设置可覆盖此处的 DNS 配置。
+const dnsProxyGroup = "DNS 出站";
+const bootstrapDns = ["tls://223.5.5.5"];
+
+const baseDnsConfig = {
     "enable": true,
     "ipv6": ipv6Enabled,
-    "prefer-h3": true,
+    "prefer-h3": false,
     "enhanced-mode": "redir-host",
-    "default-nameserver": [
-        "119.29.29.29",
-        "223.5.5.5",
-    ],
+    "default-nameserver": bootstrapDns,
     "nameserver": [
-        "system",
-        "223.5.5.5",
-        "119.29.29.29",
-        "180.184.1.1",
+        `https://1.1.1.1/dns-query#${dnsProxyGroup}`,
+        `https://8.8.8.8/dns-query#${dnsProxyGroup}`
     ],
-    "fallback": [
-        "quic://dns0.eu",
-        "https://dns.cloudflare.com/dns-query",
-        "https://dns.sb/dns-query",
-        "tcp://208.67.222.222",
-        "tcp://8.26.56.2"
-    ],
-    "proxy-server-nameserver": [
-        "quic://223.5.5.5",
-        "tls://dot.pub",
-    ]
+    // 节点域名需要先于代理连接解析，使用独立的加密上游。
+    "proxy-server-nameserver": bootstrapDns
 };
 
 const dnsConfig2 = {
-    // 提供使用 FakeIP 的 DNS 配置
-    "enable": true,
-    "ipv6": ipv6Enabled,
-    "prefer-h3": true,
+    ...baseDnsConfig,
     "enhanced-mode": "fake-ip",
     "fake-ip-filter": [
         "geosite:private",
@@ -598,27 +585,6 @@ const dnsConfig2 = {
         "*.icloud.com",
         "*.stun.*.*",
         "*.stun.*.*.*"
-    ],
-    "default-nameserver": [
-        "119.29.29.29",
-        "223.5.5.5",
-    ],
-    "nameserver": [
-        "system",
-        "223.5.5.5",
-        "119.29.29.29",
-        "180.184.1.1",
-    ],
-    "fallback": [
-        "quic://dns0.eu",
-        "https://dns.cloudflare.com/dns-query",
-        "https://dns.sb/dns-query",
-        "tcp://208.67.222.222",
-        "tcp://8.26.56.2"
-    ],
-    "proxy-server-nameserver": [
-        "quic://223.5.5.5",
-        "tls://dot.pub",
     ]
 };
 
@@ -1463,6 +1429,14 @@ function main(config) {
         defaultFallback
     });
     const globalProxies = proxyGroups.map(item => item.name);
+    proxyGroups.push({
+        "name": dnsProxyGroup,
+        "type": "url-test",
+        "include-all": true,
+        "exclude-type": "Direct|Pass|Compatible|Reject",
+        "empty-fallback": "REJECT",
+        "url": "https://cp.cloudflare.com/generate_204"
+    });
 
     proxyGroups.push(
         {
@@ -1499,10 +1473,23 @@ function main(config) {
         "rule-providers": ruleProviders,
         "rules": rules,
         "sniffer": snifferConfig,
-        "dns": fakeIPEnabled ? dnsConfig2 : dnsConfig,
+        "dns": fakeIPEnabled ? dnsConfig2 : baseDnsConfig,
         "geodata-mode": true,
         "geox-url": geoxURL,
     });
+
+    // 仅加固已启用自动路由的 TUN，由客户端或订阅决定是否开启 TUN。
+    if (config.tun?.enable && config.tun["auto-route"]) {
+        config.tun = {
+            ...config.tun,
+            "strict-route": true,
+            "dns-hijack": [...new Set([
+                ...(config.tun["dns-hijack"] || []),
+                "any:53",
+                "tcp://any:53"
+            ])]
+        };
+    }
 
     return config;
 }
