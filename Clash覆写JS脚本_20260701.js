@@ -486,11 +486,6 @@ const ruleProviders = {
 }
 
 const rules = [
-    // 阻断 Net.Coffee 的国内 IPv4 探针，检测页面本身通过代理访问。
-    "DOMAIN,2026.ip138.com,REJECT",
-    "DOMAIN,my.ip.cn,REJECT",
-    "DOMAIN,ip.net.coffee,选择节点",
-
     // -------- 广告与隐私拦截 --------
     "RULE-SET,category-ads-all,广告拦截",
     "RULE-SET,reject,广告拦截",
