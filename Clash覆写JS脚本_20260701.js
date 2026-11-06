@@ -486,6 +486,9 @@ const ruleProviders = {
 }
 
 const rules = [
+    // IP 检测探针跟随选择节点，优先于国内直连规则。
+    "DOMAIN,2026.ip138.com,选择节点",
+    "DOMAIN,my.ip.cn,选择节点",
     // -------- 广告与隐私拦截 --------
     "RULE-SET,category-ads-all,广告拦截",
     "RULE-SET,reject,广告拦截",
