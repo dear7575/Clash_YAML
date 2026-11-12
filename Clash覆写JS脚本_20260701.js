@@ -504,7 +504,9 @@ const rules = [
 
     // -------- AI --------
     "RULE-SET,openai-mrs,ChatGPT",
+    "RULE-SET,openai-mrs,REJECT",
     "RULE-SET,anthropic-mrs,Claude",
+    "RULE-SET,anthropic-mrs,REJECT",
     "RULE-SET,category-ai-chat-!cn,AI服务",
     "RULE-SET,overseas-ai-extra,AI服务",
 
@@ -1196,7 +1198,8 @@ function buildProxyGroups({
                               lowCost,
                               defaultProxies,
                               defaultSelector,
-                              defaultFallback
+                              defaultFallback,
+                              aiNodeProxies
                           }) {
     // 排除落地节点、选择节点和故障转移以避免死循环
     const frontProxySelector = [
@@ -1289,14 +1292,14 @@ function buildProxyGroups({
             "name": "ChatGPT",
             "icon": "https://cdn.jsdelivr.net/gh/powerfullz/override-rules@master/icons/chatgpt.png",
             "type": "select",
-            "proxies": defaultProxies,
+            "proxies": aiNodeProxies,
             "health-check": healthCheckTemplates.chatgpt
         },
         {
             "name": "Claude",
             "icon": "https://cdn.jsdelivr.net/gh/lobehub/lobe-icons@master/packages/static-png/dark/claude-color.png",
             "type": "select",
-            "proxies": defaultProxies
+            "proxies": aiNodeProxies
         },
         {
             "name": "AI服务",
@@ -1404,6 +1407,7 @@ function main(config) {
     // 顺序很关键：基于"加旗后的名字"去重，确保最终节点名与各代理组的引用一致，
     // 避免 SubStore 混合订阅时因命名变动导致组引用断裂、节点丢失。
     const seenNames = new Map();
+    const ambiguousNames = new Set();
     const deduplicatedProxies = (config.proxies || []).map(proxy => {
         const flaggedName = addFlagToName(proxy.name);
         let newName = flaggedName;
@@ -1413,11 +1417,20 @@ function main(config) {
             // 用 " 2" 数字后缀替代 " | #2"：去掉 | 与 # 特殊字符，
             // 规避部分内核版本对含特殊字符节点名的解析异常。
             newName = `${flaggedName} ${count + 1}`;
+            ambiguousNames.add(flaggedName);
+            ambiguousNames.add(newName);
         } else {
             seenNames.set(flaggedName, 0);
         }
         return {...proxy, name: newName};
     });
+
+    // 重名节点的数字后缀可能随订阅顺序变化，不能作为 AI 组的固定选择。
+    const nonNodeTypes = new Set(["direct", "reject", "reject-drop", "dns", "pass", "pass-rule", "compatible"]);
+    const aiNodeProxies = ["REJECT", ...deduplicatedProxies
+        .filter(proxy => !ambiguousNames.has(proxy.name) && autoTestRegex.test(proxy.name) &&
+            !nonNodeTypes.has(proxy.type))
+        .map(proxy => proxy.name)];
 
     config = {...config, proxies: deduplicatedProxies};
     // 解析地区与高/低倍率信息
@@ -1443,7 +1456,8 @@ function main(config) {
         lowCost,
         defaultProxies,
         defaultSelector,
-        defaultFallback
+        defaultFallback,
+        aiNodeProxies
     });
     const globalProxies = proxyGroups.map(item => item.name);
 
@@ -1471,13 +1485,11 @@ function main(config) {
         "log-level": "info",
         "geodata-loader": "standard",
         "external-controller": ":9999",
-        "disable-keep-alive": !keepAliveEnabled,
-        "profile": {
-            "store-selected": true,
-        }
+        "disable-keep-alive": !keepAliveEnabled
     });
 
     Object.assign(config, {
+        "profile": {...config.profile, "store-selected": true},
         "proxy-groups": proxyGroups,
         "rule-providers": ruleProviders,
         "rules": rules,
