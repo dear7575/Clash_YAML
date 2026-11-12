@@ -507,6 +507,8 @@ const rules = [
     "RULE-SET,openai-mrs,REJECT",
     "RULE-SET,anthropic-mrs,Claude",
     "RULE-SET,anthropic-mrs,REJECT",
+    "DOMAIN-KEYWORD,nexus-websocket-,Claude",
+    "DOMAIN-KEYWORD,nexus-websocket-,REJECT",
     "RULE-SET,category-ai-chat-!cn,AI服务",
     "RULE-SET,overseas-ai-extra,AI服务",
 
