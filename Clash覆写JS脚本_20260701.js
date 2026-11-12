@@ -1001,49 +1001,49 @@ function addFlagToName(name) {
 
 // 健康检查配置模板
 const healthCheckTemplates = {
-    // 高敏感度测速
-    highSensitive: {
-        "enable": true,
-        "interval": 300,  // 5分钟
-        "url": "https://cp.cloudflare.com/generate_204",
-        "method": "HEAD",
-        "timeout": 3,
-        "expected-status": "204"
-    },
-    // 标准健康检查
+    // 普通节点可用性检查
     standard: {
         "enable": true,
-        "interval": 600,  // 10分钟
+        "interval": 600,
+        "url": "https://cp.cloudflare.com/generate_204",
+        "method": "HEAD",
+        "timeout": 10,
+        "expected-status": "204"
+    },
+    // 延迟自动节点探测
+    fast: {
+        "enable": true,
+        "interval": 300,
         "url": "https://cp.cloudflare.com/generate_204",
         "method": "HEAD",
         "timeout": 5,
         "expected-status": "204"
     },
-    // 快速健康检查
-    fast: {
-        "enable": true,
-        "interval": 300,  // 5分钟
-        "url": "https://cp.cloudflare.com/generate_204",
-        "method": "HEAD",
-        "timeout": 3,
-        "expected-status": "204"
-    },
-    // ChatGPT 健康检查
+    // ChatGPT 服务检查
     chatgpt: {
         "enable": true,
-        "interval": 1200,  // 20分钟
+        "interval": 600,
         "url": "https://chatgpt.com",
         "method": "HEAD",
         "timeout": 10,
         "expected-status": "200"
     },
-    // 媒体服务健康检查
+    // Claude 服务检查
+    claude: {
+        "enable": true,
+        "interval": 600,
+        "url": "https://claude.ai",
+        "method": "HEAD",
+        "timeout": 10,
+        "expected-status": "200"
+    },
+    // 媒体服务检查
     media: {
         "enable": true,
-        "interval": 900,  // 15分钟
+        "interval": 600,
         "url": "https://www.youtube.com/generate_204",
         "method": "HEAD",
-        "timeout": 8,
+        "timeout": 10,
         "expected-status": "204"
     }
 };
@@ -1058,8 +1058,8 @@ const autoTestRegex = new RegExp(autoTestFilter, "i");
 
 // 代理组通用配置
 const groupBaseOption = {
-    "interval": 300,
-    "timeout": 3000,
+    "interval": 600,
+    "timeout": 10000,
     "url": "https://cp.cloudflare.com/generate_204",
     "lazy": true,
     "max-failed-times": 3,
@@ -1156,10 +1156,10 @@ function buildCountryProxyGroups(countryList) {
                 "type": (loadBalance) ? "load-balance" : "url-test",
                 // 兜底组只承接未命中国家/地区规则的普通节点，不与地区、落地、低倍率组重复。
                 "url": "https://cp.cloudflare.com/generate_204",
-                "interval": 60,
+                "interval": 600,
                 "tolerance": 20,
                 "lazy": false,
-                "health-check": healthCheckTemplates.fast
+                "health-check": healthCheckTemplates.standard
             };
 
             countryProxyGroups.push(groupConfig);
@@ -1181,10 +1181,10 @@ function buildCountryProxyGroups(countryList) {
                 // 健康检查对 load-balance 与 url-test 都是必需的：load-balance 依赖它分配流量，
                 // 缺失时混合订阅（节点数多）易触发组内节点不可用/丢失。此处两种类型统一补齐。
                 "url": "https://cp.cloudflare.com/generate_204",
-                "interval": 60,
+                "interval": 600,
                 "tolerance": 20,
                 "lazy": false,
-                "health-check": healthCheckTemplates.fast
+                "health-check": healthCheckTemplates.standard
             };
 
             countryProxyGroups.push(groupConfig);
@@ -1234,7 +1234,8 @@ function buildProxyGroups({
             "name": "手动选择",
             "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Available.png",
             "include-all": true,
-            "type": "select"
+            "type": "select",
+            "proxies": ["负载均衡(散列)", "负载均衡(轮询)"]
         },
         (landing) ? {
             "name": "前置代理",
@@ -1257,7 +1258,7 @@ function buildProxyGroups({
             "type": "fallback",
             "url": "https://cp.cloudflare.com/generate_204",
             "proxies": defaultFallback,
-            "interval": 180,
+            "interval": 600,
             "tolerance": 20,
             "lazy": false,
             "health-check": healthCheckTemplates.standard
@@ -1301,7 +1302,8 @@ function buildProxyGroups({
             "name": "Claude",
             "icon": "https://cdn.jsdelivr.net/gh/lobehub/lobe-icons@master/packages/static-png/dark/claude-color.png",
             "type": "select",
-            "proxies": aiNodeProxies
+            "proxies": aiNodeProxies,
+            "health-check": healthCheckTemplates.claude
         },
         {
             "name": "AI服务",
@@ -1387,6 +1389,8 @@ function buildProxyGroups({
             "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Rocket.png",
             "type": "url-test",
             "url": "https://cp.cloudflare.com/generate_204",
+            "interval": 600,
+            "timeout": 10000,
             "include-all": true,
             "filter": highCostIncludeFilter,
             "health-check": healthCheckTemplates.standard
@@ -1396,6 +1400,8 @@ function buildProxyGroups({
             "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Lab.png",
             "type": "url-test",
             "url": "https://cp.cloudflare.com/generate_204",
+            "interval": 600,
+            "timeout": 10000,
             "include-all": true,
             "filter": lowCostExcludeFilter,
             "health-check": healthCheckTemplates.standard
