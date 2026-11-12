@@ -382,6 +382,11 @@ const ruleProviders = {
         "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/openai.mrs",
         "path": "./ruleset/openai-mrs.mrs"
     },
+    "anthropic-mrs": {
+        "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
+        "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/anthropic.mrs",
+        "path": "./ruleset/anthropic-mrs.mrs"
+    },
     "onedrive-mrs": {
         "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
         "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/onedrive.mrs",
@@ -498,7 +503,8 @@ const rules = [
     "RULE-SET,schwab-domains,嘉信服务",
 
     // -------- AI --------
-    "RULE-SET,openai-mrs,AI服务",
+    "RULE-SET,openai-mrs,ChatGPT",
+    "RULE-SET,anthropic-mrs,Claude",
     "RULE-SET,category-ai-chat-!cn,AI服务",
     "RULE-SET,overseas-ai-extra,AI服务",
 
@@ -1018,8 +1024,8 @@ const healthCheckTemplates = {
         "timeout": 3,
         "expected-status": "204"
     },
-    // AI服务健康检查
-    ai: {
+    // ChatGPT 健康检查
+    chatgpt: {
         "enable": true,
         "interval": 1200,  // 20分钟
         "url": "https://chatgpt.com",
@@ -1280,11 +1286,23 @@ function buildProxyGroups({
             "proxies": defaultProxies,
         },
         {
-            "name": "AI服务",
+            "name": "ChatGPT",
             "icon": "https://cdn.jsdelivr.net/gh/powerfullz/override-rules@master/icons/chatgpt.png",
             "type": "select",
             "proxies": defaultProxies,
-            "health-check": healthCheckTemplates.ai
+            "health-check": healthCheckTemplates.chatgpt
+        },
+        {
+            "name": "Claude",
+            "icon": "https://cdn.jsdelivr.net/gh/lobehub/lobe-icons@master/packages/static-png/dark/claude-color.png",
+            "type": "select",
+            "proxies": defaultProxies
+        },
+        {
+            "name": "AI服务",
+            "icon": "https://cdn.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/AI.png",
+            "type": "select",
+            "proxies": defaultProxies
         },
         {
             "name": "盈透服务",
