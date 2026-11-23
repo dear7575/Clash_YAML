@@ -531,7 +531,7 @@ const rules = [
     "DOMAIN-SUFFIX,pglstatp-toutiao-b.com,广告拦截",
     "DOMAIN-KEYWORD,-ad-sign.byteimg.com,广告拦截",
     "DOMAIN-SUFFIX,zlink.ugsdk.cn,广告拦截",
-    ""DOMAIN-REGEX,^ads[0-9]*-normal(-[a-z0-9]+)?\\.zijieapi\\.com$,广告拦截",
+    "DOMAIN-REGEX,^ads[0-9]*-normal(-[a-z0-9]+)?\\.zijieapi\\.com$,广告拦截",
 
 
     // -------- 券商服务 --------
