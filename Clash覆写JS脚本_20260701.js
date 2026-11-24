@@ -1015,7 +1015,7 @@ const healthCheckTemplates = {
         "enable": true,
         "interval": 600,
         "url": "https://cp.cloudflare.com/generate_204",
-        "method": "HEAD",
+        "method": "GET",
         "timeout": 10,
         "expected-status": "204"
     },
