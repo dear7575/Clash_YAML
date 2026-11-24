@@ -211,6 +211,30 @@ const ruleProviders = {
         "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/category-ads-all.mrs",
         "path": "./ruleset/category-ads-all.mrs"
     },
+
+    "ByteDanceAd": {
+        "type": "http", "format": "text", "behavior": "classical", "interval": 86400,
+        "url": "https://raw.githubusercontent.com/henrysha1989/shadowrocket-adr-rules/clash-ios/mihomo/bytedance-ad.list",
+        "path": "./ruleset/ByteDanceAd.list"
+    },
+
+    "BanAD": {
+        "type": "http", "format": "text", "behavior": "classical", "interval": 86400,
+        "url": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/BanAD.list",
+        "path": "./ruleset/BanAD.list"
+    },
+
+    "AntiAd": {
+        "type": "http", "format": "yaml", "behavior": "domain", "interval": 86400,
+        "url": "https://raw.githubusercontent.com/privacy-protection-tools/anti-AD/master/anti-ad-clash.yaml",
+        "path": "./ruleset/anti-ad-clash.yaml"
+    },
+
+    "SukkaReject": {
+        "type": "http", "format": "text", "behavior": "classical", "interval": 86400,
+        "url": "https://ruleset.skk.moe/Clash/non_ip/reject.txt",
+        "path": "./ruleset/skk-reject.txt"
+    },
     "category-ai-chat-!cn": {
         "type": "http", "format": "mrs", "behavior": "domain", "interval": 86400,
         "url": "https://github.com/MetaCubeX/meta-rules-dat/raw/refs/heads/meta/geo/geosite/category-ai-chat-!cn.mrs",
@@ -497,6 +521,17 @@ const rules = [
     // -------- 广告与隐私拦截 --------
     "RULE-SET,category-ads-all,广告拦截",
     "RULE-SET,reject,广告拦截",
+    "RULE-SET,ByteDanceAd,广告拦截",
+    "RULE-SET,BanAD,广告拦截",
+    "RULE-SET,AntiAd,广告拦截",
+    "RULE-SET,SukkaReject,广告拦截",
+    // -------- 红果短剧 / 穿山甲去广告（补 category-ads-all 与 reject 未覆盖的域名） --------
+    "DOMAIN-KEYWORD,pangolin,广告拦截",
+    "DOMAIN-SUFFIX,pglstatp-toutiao.com,广告拦截",
+    "DOMAIN-SUFFIX,pglstatp-toutiao-b.com,广告拦截",
+    "DOMAIN-KEYWORD,-ad-sign.byteimg.com,广告拦截",
+    "DOMAIN-SUFFIX,zlink.ugsdk.cn,广告拦截",
+    "DOMAIN-REGEX,^ads[0-9]+-normal\\.zijieapi\\.com$,广告拦截",
 
     // -------- 券商服务 --------
     "RULE-SET,ibkr-domains,盈透服务",
