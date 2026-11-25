@@ -518,6 +518,10 @@ const rules = [
     // IP 检测探针跟随选择节点，优先于国内直连规则。
     "DOMAIN,2026.ip138.com,选择节点",
     "DOMAIN,my.ip.cn,选择节点",
+    // -------- WebRTC 防泄露：拦截 STUN（UDP 探真实 IP） --------
+    "DOMAIN-KEYWORD,stun,REJECT",
+    "DST-PORT,3478,REJECT",
+    "DST-PORT,5349,REJECT",
     // -------- 广告与隐私拦截 --------
     "RULE-SET,category-ads-all,广告拦截",
     "RULE-SET,reject,广告拦截",
