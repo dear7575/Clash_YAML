@@ -1090,7 +1090,7 @@ const healthCheckTemplates = {
 // 自动测速/负载均衡组的统一节点过滤正则。
 // 仅排除明确的"信息类/非代理"节点；流量/剩余/套餐只在名称开头时排除，避免误伤真实线路名。
 // 三个自动组共用同一规则，保证行为一致（DRY）。
-const nonProxyKeywordSource = "DIRECTLY|DIRECT|过期|到期|官网|测速|订阅|重置|网址|失效|Expire|Expired|Invalid";
+const nonProxyKeywordSource = "DIRECTLY|DIRECT|过期|到期|官网|测速|订阅|重置|网址|失效|Expire|Expired|Invalid|ISP-US";
 const leadingTrafficInfoSource = "^\\s*(?:剩余|套餐|流量|Traffic|Remaining)";
 const autoTestFilter = `^((?!(${nonProxyKeywordSource}|${leadingTrafficInfoSource})).)*$`;
 const autoTestRegex = new RegExp(autoTestFilter, "i");
@@ -1480,7 +1480,7 @@ function main(config) {
             !nonNodeTypes.has(proxy.type))
         .map(proxy => proxy.name)];
 
-    config = {...config, proxies: deduplicatedProxies};
+    config = {...config, proxies: ISP_ENABLED ? [...deduplicatedProxies] : deduplicatedProxies};
     // 解析地区与高/低倍率信息
     const countryInfo = parseCountries(config); // [{ country, count }]
     const lowCost = hasLowCost(config);
