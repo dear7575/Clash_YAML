@@ -765,10 +765,11 @@ function buildProxyGroups({
 function main(config) {
     // 1. 注入 ISP 节点（链式经「前置代理」组）
     let proxies = (config.proxies || []).slice();
-    const ispName = ispProxy.server ? ispProxy.name : null;
+    // 链式开启时节点名带「(链式)」后缀：在面板里看到后缀，就说明该节点已设置 dialer-proxy
+    const ispName = ispProxy.server ? (ISP_CHAIN ? `${ispProxy.name} (链式)` : ispProxy.name) : null;
     if (ispName) {
         proxies = proxies.filter(p => p.name !== ispName);
-        proxies.push(ISP_CHAIN ? {...ispProxy, "dialer-proxy": FRONT_GROUP} : {...ispProxy});
+        proxies.push({...ispProxy, name: ispName, ...(ISP_CHAIN ? {"dialer-proxy": FRONT_GROUP} : {})});
     }
 
     // 2. 加国旗 + 重名处理（先加旗再去重，保证后续各组引用的名字一致）
