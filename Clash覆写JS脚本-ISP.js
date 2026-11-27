@@ -409,12 +409,13 @@ const rules = [
     "RULE-SET,wise,选择节点",
 
     // -------- 直连 / 代理兜底 --------
-    // IP 类规则补 no-resolve：否则每个未命中的域名都会先做一次真实 DNS 解析再比对 IP 段
+    // 注意：private-mrs / cn-mrs 刻意不加 no-resolve，与原脚本保持一致。
+    // 这样未命中的域名会先经代理 DoH 解析再比对 IP 段，DNS 泄漏检测表现和原脚本相同
     "RULE-SET,applications,直连",
-    "RULE-SET,private-mrs,直连,no-resolve",
+    "RULE-SET,private-mrs,直连",
     "RULE-SET,private,直连",
     "RULE-SET,geolocation-cn,直连",
-    "RULE-SET,cn-mrs,直连,no-resolve",
+    "RULE-SET,cn-mrs,直连",
     "RULE-SET,direct,直连",
     "RULE-SET,proxy,选择节点",
     "RULE-SET,gfw,选择节点",
@@ -444,10 +445,7 @@ const snifferConfig = {
 };
 
 const bootstrapDns = ["tls://223.5.5.5"];
-const cnDns = ["https://223.5.5.5/dns-query", "https://doh.pub/dns-query"];
-// false（默认）= 所有 DNS 都经代理解析，不会出现国内 DNS 出口（防 DNS 泄漏）
-// true = 国内域名走国内 DoH 直连解析，国内站更快，但 DNS 泄漏检测会显示中国 DNS
-const CN_DNS_POLICY = false;
+
 
 const baseDnsConfig = {
     "enable": true,
@@ -459,7 +457,6 @@ const baseDnsConfig = {
         "https://1.1.1.1/dns-query#选择节点",
         "https://8.8.8.8/dns-query#选择节点"
     ],
-    ...(CN_DNS_POLICY ? {"nameserver-policy": {"geosite:cn,private": cnDns}} : {}),
     "proxy-server-nameserver": bootstrapDns
 };
 
